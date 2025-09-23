@@ -19,6 +19,15 @@ def language_view(request, language_slug):
 
 
 class LanguageList(APIView):
+    
+    """
+    list:
+    Barcha tillarni olish.
+
+    create:
+    Yangi til qo‘shish.
+    """
+
     def get(self, request):
         languages = Language.objects.all()
         serializer = LanguageSerializer(languages, many=True)
