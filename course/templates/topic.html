@@ -1,0 +1,169 @@
+
+{% extends "base.html" %}
+
+
+{% block title %}Topic Page{% endblock %}
+
+{% block content %}
+
+<!-- Main content -->
+    <div class="topic-container">
+        <nav class="sidebar left-sidebar">
+            <div class="sidebar-header">
+                <h1>{{ language.name }} Navigation</h1>
+            </div>
+            
+            <div class="nav-section">
+                <h2>Topics</h2>
+                <ul class="nav-links">
+                    {% for topic in topics %}
+                        <li>
+                            <a href="{% url 'language_topic' language.slug %}#{{ topic.slug }}">
+                                {{ topic.title }}
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li>No topics yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <!-- <div class="nav-section">
+                <h2>Fundamentals and usage</h2>
+                <ul class="nav-links">
+                    <li>
+                        <a href="#" class="active">NumPy fundamentals</a>
+                        <ul class="sub-list">
+                            <li><a href="#">Array creation</a></li>
+                            <li><a href="#">Indexing on ndarrays</a></li>
+                            <li><a href="#">Array types and conversions</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Data types</a></li>
+                    <li><a href="#">Broadcasting</a></li>
+                </ul>
+            </div> -->
+
+            <!-- <div class="nav-section">
+                <h2>Mathematics</h2>
+                <ul class="nav-links">
+                    <li><a href="#">Mathematical functions</a></li>
+                    <li><a href="#">Arithmetic operations</a></li>
+                </ul>
+            </div> -->
+<!-- 
+            <div class="nav-section">
+                <h2>Advanced topics</h2>
+                <ul class="nav-links">
+                    <li><a href="#">C API</a></li>
+                    <li><a href="#">Distributed arrays</a></li>
+                </ul>
+            </div> -->
+
+            <!-- <div class="nav-section">
+                <h2>Community</h2>
+                <ul class="nav-links">
+                    <li><a href="#">Contributing to NumPy</a></li>
+                    <li><a href="#">Code of conduct</a></li>
+                </ul>
+            </div> -->
+        </nav>
+        
+        <main class="main-content">
+            <div class="content-header">
+                <div class="breadcrumb">
+                    <!-- <a href="/course/{{ language.slug }}/">{{ language.name }}</a>  -->
+                    <a href="{% url 'language_topic' language.slug %}">course/{{ language.name }}</a>
+
+                    <!-- &gt; <a href="#">Fundamentals and usage</a>  -->
+                    <!-- &gt; <a href="#">{{ language.name }} fundamentals</a> -->
+                </div>
+                <h1>{{ language.name }}: Array types and conversions between types</h1>
+            </div>
+
+            
+            <div class="content-section">
+                <p>NumPy supports a much greater variety of numerical types than Python does. This section shows which are available, and how to modify an array's data-type.</p>
+                
+                <p>NumPy numerical types are instances of numpy.dtype (data-type) objects, each having unique characteristics. Once you have imported NumPy using <code>import numpy as np</code> you can create arrays with a specified dtype using the scalar types in the numpy top-level API, e.g. <code>numpy.bool</code>, <code>numpy.float32</code>, etc.</p>
+                
+                <p>These scalar types as arguments to the dtype keyword that many numpy functions or methods accept. For example:</p>
+                
+                <div class="code-block">
+                    <span class="prompt">&gt;&gt;&gt;</span> z = np.arange(3, dtype=np.uint8)<br>
+                    <span class="prompt">&gt;&gt;&gt;</span> z<br>
+                    <span class="output">array([0, 1, 2], dtype=uint8)</span>
+                </div>
+                
+                <p>Array types can also be referred to by character codes, for example:</p>
+                
+                <div class="code-block">
+                    <span class="prompt">&gt;&gt;&gt;</span> np.array([1, 2, 3], dtype='f')<br>
+                    <span class="output">array([1., 2., 3.], dtype=float32)</span><br>
+                    <span class="prompt">&gt;&gt;&gt;</span> np.array([1, 2, 3], dtype='i')<br>
+                    <span class="output">array([1, 2, 3], dtype=int32)</span>
+                </div>
+                
+                <h2 id="numerical-types">Numerical Data Types</h2>
+                
+                <p>NumPy provides a wide range of numerical data types that can be used to create arrays. These include integers, floating-point numbers, complex numbers, and more.</p>
+                
+                <p>Integer types in NumPy include various sizes from 8-bit to 64-bit integers, both signed and unsigned. Floating-point types include 16-bit, 32-bit, and 64-bit floats, with 64-bit being the standard double precision.</p>
+                
+                <div class="code-block">
+                    <span class="prompt">&gt;&gt;&gt;</span> # Integer types<br>
+                    <span class="prompt">&gt;&gt;&gt;</span> int8_array = np.array([1, 2, 3], dtype=np.int8)<br>
+                </div>
+                <h2 id="string-types">Data Types for Strings and Bytes</h2>
+                <p>NumPy also supports arrays of strings and bytes, with fixed-length or variable-length elements.</p>
+                <p>String arrays in NumPy can be created with specific character lengths, which can help optimize memory usage when working with textual data.</p>
+                
+                <div class="code-block">
+                    <span class="prompt">&gt;&gt;&gt;</span> # Fixed-length string array<br>
+                    <span class="prompt">&gt;&gt;&gt;</span> str_array = np.array(['apple', 'banana', 'cherry'], dtype='U10')<br>
+                    <span class="prompt">&gt;&gt;&gt;</span> str_array<br>
+                    <span class="output">array(['apple', 'banana', 'cherry'], dtype='<U10')</span><br>
+                </div>
+                <h2 id="best-practices">Best Practices</h2>
+                <p>When working with NumPy data types, it's important to follow best practices to ensure efficient and correct code.</p>
+                
+                <p>Choose the smallest data type that can adequately represent your data to minimize memory usage. Be mindful of potential overflow issues when working with integer types.</p>
+                
+                <h2 id="examples">Practical Examples</h2>
+                <p>Here are some practical examples of working with different NumPy data types in real-world scenarios.</p>
+                
+                <div class="code-block">
+                    <span class="prompt">&gt;&gt;&gt;</span> # Image processing example<br>
+                    <span class="prompt">&gt;&gt;&gt;</span> # Using uint8 for image data (0-255 range)<br>
+                </div>
+
+                <h2 id="troubleshooting">Troubleshooting</h2>
+                <p>Common issues when working with NumPy data types include overflow errors, precision loss, and type conversion problems.</p>
+                
+                <h2 id="additional-section-1">Additional Section 1</h2>
+                <p>More content for testing scroll behavior and sidebar functionality.</p>
+                
+                
+            </div>
+        </main>
+        <aside class="right-sidebar">
+            <div class="right-sidebar-content">
+                <h3>On this page</h3>
+                <ul>
+                    <li><a href="#numerical-types">Numerical Data Types</a></li>
+                    <li><a href="#string-types">Data Types for Strings and Bytes</a></li>
+                    <li><a href="#best-practices">Best Practices</a></li>
+                    <li><a href="#examples">Practical Examples</a></li>
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    <li><a href="#additional-section-1">Additional Section 1</a></li>
+                    <li><a href="#additional-section-2">Additional Section 2</a></li>
+                    
+                    
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+
+
+{% endblock %}

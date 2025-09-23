@@ -1,0 +1,818 @@
+
+
+{% extends "base.html" %}
+
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+
+    <style>
+        /* Base styles */
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Enhanced liquid glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Enhanced glass button with better visibility */
+        .glass-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            color: rgba(0, 0, 0, 0.7);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.5);
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.15),
+                0 0 0 2px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.7);
+            color: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Programming language buttons */
+        .lang-button {
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+        
+        .lang-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.15),
+                0 0 0 2px rgba(59, 130, 246, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Text colors for better contrast */
+        .text-glass-dark {
+            color: rgba(0, 0, 0, 0.75);
+        }
+        
+        .text-glass-light {
+            color: rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Subtle blue tint for logo only */
+        .logo-blue {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.7) 0%, rgba(37, 99, 235, 0.7) 100%);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        /* New sections styles */
+        
+        /* Section container with clear separation */
+        .section-container {
+        padding: 8rem 4rem; /* Yuqori paddingni oshiramiz */
+        margin-bottom: 2rem;
+        }
+        
+        /* Add a subtle border between sections */
+        .section-container:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* About section with circular image */
+        .about-section {
+            padding: 4rem 0;
+            margin: 2rem 0;
+        }
+        
+        .about-image {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Timeline chart section */
+        .timeline-section {
+            padding: 3rem 0;
+            margin: 2rem 0;
+        }
+        
+        .timeline-container {
+            padding: 2rem;
+            border-radius: 1.5rem;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+        }
+        
+        .chart-container {
+            height: 400px;
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        .chart-description {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* Reviews section with auto-scrolling carousel */
+        .reviews-section {
+            padding: 3rem 0;
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .reviews-container {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            animation: scrollReviews 30s linear infinite;
+            width: max-content;
+        }
+        
+        .review-card {
+            min-width: 220px;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.08),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        @keyframes scrollReviews {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-220px * 8 - 1rem * 8));
+            }
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.75rem;
+        }
+        
+        .star-rating {
+            color: #fbbf24;
+            font-size: 0.8rem;
+            margin: 0.25rem 0;
+        }
+        
+        .review-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: rgba(0, 0, 0, 0.7);
+            margin-top: 0.5rem;
+        }
+        
+        .review-user {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-info h4 {
+            font-size: 0.9rem;
+            margin: 0;
+            color: rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Code editor section */
+        .code-editor-section {
+            padding: 3rem 0;
+            margin: 2rem 0;
+        }
+        
+        .code-editor-container {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: #1e293b;
+        }
+        
+        .editor-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .editor-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .editor-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot-red {
+            background: #f87171;
+        }
+        
+        .dot-yellow {
+            background: #fbbf24;
+        }
+        
+        .dot-green {
+            background: #10b981;
+        }
+        
+        .editor-content {
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        
+        .code-line {
+            margin-bottom: 0.5rem;
+        }
+        
+        .code-keyword {
+            color: #60a5fa;
+        }
+        
+        .code-function {
+            color: #fbbf24;
+        }
+        
+        .code-string {
+            color: #34d399;
+        }
+        
+        .code-comment {
+            color: #94a3b8;
+        }
+        
+        /* Section headings */
+        .section-heading {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: rgba(59, 130, 246, 0.7);
+            border-radius: 3px;
+        }
+        
+        /* Chart tabs */
+        .chart-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+        
+        .chart-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .chart-tab.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .chart-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+
+
+
+    <!-- Programming Languages Section -->
+    <section class="section-container">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-heading text-2xl md:text-3xl font-bold text-glass-dark">
+                Popular Programming Languages
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {% for language in languages %}
+                <a href="{% url 'language_topic' language.slug %}" class="lang-button text-center">
+                    <div class="w-12 h-12 flex items-center justify-center bg-gray-200 rounded mb-2 mx-auto">
+                        {% if language.image %}
+                            <img src="{{ language.image.url }}" alt="{{ language.name }}" class="w-12 h-12 object-contain rounded">
+                        {% else %}
+                            <span class="text-gray-700 font-bold">{{ language.name|first }}</span>
+                        {% endif %}
+                    </div>
+                    <span class="text-glass-dark font-medium">{{ language.name }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- About Section -->
+    <section class="section-container">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="md:w-1/2">
+                    <h2 class="section-heading text-2xl md:text-3xl font-bold text-glass-dark">About Our Platform</h2>
+                    <p class="text-glass-light mb-4">
+                        EduLearn is a cutting-edge platform designed to help aspiring developers master programming 
+                        languages through interactive courses, real-world projects, and personalized mentorship.
+                    </p>
+                    <p class="text-glass-light mb-4">
+                        Our mission is to make quality programming education accessible to everyone, regardless of 
+                        their background or experience level. We believe that with the right guidance and resources, 
+                        anyone can become a proficient developer.
+                    </p>
+                    <p class="text-glass-light">
+                        Join our community of over 50,000 learners who have transformed their careers through our 
+                        comprehensive curriculum and supportive learning environment.
+                    </p>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" 
+                         alt="About EduLearn" class="about-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Chart Section -->
+    <section class="section-container">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-heading text-2xl md:text-3xl font-bold text-glass-dark">Learning Timeline</h2>
+            <p class="text-center text-glass-light mb-8 max-w-2xl mx-auto">
+                Our structured learning paths help you master programming languages efficiently. 
+                Here's an estimated timeline for becoming proficient in Python:
+            </p>
+            
+            <div class="timeline-container">
+                <div class="chart-tabs">
+                    <div class="chart-tab active" data-chart="bar">Bar Chart</div>
+                    <div class="chart-tab" data-chart="line">Line Chart</div>
+                    <div class="chart-tab" data-chart="pie">Pie Chart</div>
+                    <div class="chart-tab" data-chart="radar">Radar Chart</div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="learningTimelineChart"></canvas>
+                </div>
+                
+                <div class="chart-description">
+                    <p>Visual representation of estimated learning hours for Python mastery</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="section-container">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-heading text-2xl md:text-3xl font-bold text-glass-dark">What Our Students Say</h2>
+            
+            <div class="reviews-container">
+                <!-- Review Card 1 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Sarah Johnson" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Sarah Johnson</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"EduLearn transformed my career! The Python course was comprehensive and the projects were excellent."</p>
+                </div>
+                
+                <!-- Review Card 2 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Michael Chen" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Michael Chen</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"The JavaScript course was exactly what I needed to transition to full-stack development."</p>
+                </div>
+                
+                <!-- Review Card 3 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Emma Rodriguez" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Emma Rodriguez</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"As a complete beginner, I was nervous about learning to code. But EduLearn made it enjoyable!"</p>
+                </div>
+                
+                <!-- Review Card 4 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="David Kim" class="user-avatar">
+                        <div class="user-info">
+                            <h4>David Kim</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"The data science track exceeded my expectations. Prepared me perfectly for my current role."</p>
+                </div>
+                
+                <!-- Review Card 5 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Alex Turner" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Alex Turner</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"I've tried other coding platforms, but EduLearn's project-based approach made the difference."</p>
+                </div>
+                
+                <!-- Review Card 6 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Sophia Martinez" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Sophia Martinez</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"The mobile development course was exactly what I needed to launch my startup."</p>
+                </div>
+                
+                <!-- Review Card 7 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="James Wilson" class="user-avatar">
+                        <div class="user-info">
+                            <h4>James Wilson</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"The mentorship program is invaluable for getting unstuck on challenging concepts."</p>
+                </div>
+                
+                <!-- Review Card 8 -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Olivia Parker" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Olivia Parker</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"I landed a developer job just 6 months after completing the Python course."</p>
+                </div>
+                
+                <!-- Duplicate cards for seamless looping -->
+                <!-- Review Card 1 (Duplicate) -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Sarah Johnson" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Sarah Johnson</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"EduLearn transformed my career! The Python course was comprehensive and the projects were excellent."</p>
+                </div>
+                
+                <!-- Review Card 2 (Duplicate) -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Michael Chen" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Michael Chen</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"The JavaScript course was exactly what I needed to transition to full-stack development."</p>
+                </div>
+                
+                <!-- Review Card 3 (Duplicate) -->
+                <div class="review-card">
+                    <div class="review-user">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" 
+                             alt="Emma Rodriguez" class="user-avatar">
+                        <div class="user-info">
+                            <h4>Emma Rodriguez</h4>
+                            <div class="star-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"As a complete beginner, I was nervous about learning to code. But EduLearn made it enjoyable!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Editor Section -->
+    <section class="section-container">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="section-heading text-2xl md:text-3xl font-bold text-glass-dark">Try Our Interactive Code Editor</h2>
+            <p class="text-center text-glass-light mb-8 max-w-2xl mx-auto">
+                Practice coding directly in your browser with our built-in code editor. 
+                Get instant feedback and improve your skills with real-time error checking.
+            </p>
+            
+            <div class="code-editor-container">
+                <div class="editor-header">
+                    <div class="editor-dots">
+                        <div class="editor-dot dot-red"></div>
+                        <div class="editor-dot dot-yellow"></div>
+                        <div class="editor-dot dot-green"></div>
+                    </div>
+                    <span class="text-white text-sm ml-4">example.py</span>
+                </div>
+                <div class="editor-content">
+                    <div class="code-line"><span class="code-keyword">def</span> <span class="code-function">calculate_fibonacci</span>(n):</div>
+                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> n <= 1:</div>
+                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> n</div>
+                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:</div>
+                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> calculate_fibonacci(n-1) + calculate_fibonacci(n-2)</div>
+                    <div class="code-line"></div>
+                    <div class="code-line"><span class="code-comment"># Get input from user</span></div>
+                    <div class="code-line">num_terms = <span class="code-function">int</span>(<span class="code-function">input</span>(<span class="code-string">"Enter the number of terms: "</span>))</div>
+                    <div class="code-line"></div>
+                    <div class="code-line"><span class="code-comment"># Display the Fibonacci sequence</span></div>
+                    <div class="code-line"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-function">range</span>(num_terms):</div>
+                    <div class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-function">print</span>(calculate_fibonacci(i))</div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-6">
+                <a href="#" class="glass-button px-6 py-3 rounded-xl text-glass-dark text-lg inline-flex items-center">
+                    <i class="fas fa-code mr-2"></i>
+                    Try Our Code Editor
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Chart.js implementation for learning timeline
+        const ctx = document.getElementById('learningTimelineChart').getContext('2d');
+        
+        // Data for the charts
+        const learningData = {
+            labels: ['Basic Syntax', 'Data Structures', 'OOP', 'Web Development', 'Real Projects'],
+            datasets: [{
+                label: 'Learning Hours',
+                data: [40, 60, 50, 80, 100],
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.7)',
+                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(245, 158, 11, 0.7)',
+                    'rgba(139, 92, 246, 0.7)',
+                    'rgba(239, 68, 68, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(16, 185, 129, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(139, 92, 246, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        // Chart configuration
+        const chartConfig = {
+            type: 'bar',
+            data: learningData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Hours'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Python Learning Timeline (Hours)'
+                    }
+                }
+            }
+        };
+        
+        // Create initial chart
+        let learningChart = new Chart(ctx, chartConfig);
+        
+        // Chart type switching
+        const chartTabs = document.querySelectorAll('.chart-tab');
+        chartTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                chartTabs.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Get chart type from data attribute
+                const chartType = this.getAttribute('data-chart');
+                
+                // Destroy current chart
+                learningChart.destroy();
+                
+                // Update chart configuration based on type
+                chartConfig.type = chartType;
+                
+                // Adjust options for different chart types
+                if (chartType === 'pie' || chartType === 'doughnut') {
+                    chartConfig.options.scales = {};
+                } else {
+                    chartConfig.options.scales = {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Hours'
+                            }
+                        }
+                    };
+                }
+                
+                // Create new chart
+                learningChart = new Chart(ctx, chartConfig);
+            });
+        });
+        
+        // Pause reviews carousel on hover
+        const reviewsContainer = document.querySelector('.reviews-container');
+        reviewsContainer.addEventListener('mouseenter', function() {
+            this.style.animationPlayState = 'paused';
+        });
+        
+        reviewsContainer.addEventListener('mouseleave', function() {
+            this.style.animationPlayState = 'running';
+        });
+    </script>
+
+
+
+{% endblock %}
