@@ -22,6 +22,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,6 +33,10 @@ INSTALLED_APPS = [
     # local apps
     'home',
     'course',
+
+    # global apps
+    'rest_framework',
+    
 ]
 
 
@@ -57,7 +62,8 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request', 
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -131,3 +137,48 @@ MEDIA_ROOT = BASE_DIR / "media-files"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+JAZZMIN_SETTINGS = {
+    # Title va brending
+    "site_title": "Learning Platform Admin",
+    "site_header": "Learning Platform",
+    "site_brand": "LearningPlatform",
+    "site_logo": "images/logo.png",        # static/images/logo.png joylashtiring
+    "site_logo_classes": "img-circle",     # logoni yumaloq qilish uchun
+    "welcome_sign": "Administration Dashboard",
+    "copyright": "© {year} Learning Platform",
+
+    # Top menu sozlamalari
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"model": "auth.User"},
+        {"app": "auth"},
+    ],
+
+    # Foydalanuvchi menyusi
+    "usermenu_links": [
+        {"model": "auth.user"},
+        {"name": "Support", "url": "https://support.learningplatform.com", "new_window": True},
+    ],
+
+    # Ikonkalarga professional ko‘rinish berish
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+
+    # UI sozlamalari
+    "show_ui_builder": False,   # admin ichida UI builder tugmasini o‘chirib qo‘yish
+    "navigation_expanded": True,
+    "hide_apps": ["sessions"], # keraksiz app’larni yashirish
+    "hide_models": ["auth.Group"],
+
+    # Search sozlamalari
+    "search_model": "auth.User",
+    "order_with_respect_to": ["auth", "myapp"],
+
+    # Admin interfeys ranglari
+    "theme": "lux",  # bootstrap bootswatch temalardan foydalaning: cerulean, cosmo, lux, slate, litera, etc.
+}

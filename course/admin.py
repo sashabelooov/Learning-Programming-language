@@ -15,7 +15,7 @@ class LanguageAdmin(admin.ModelAdmin):
 # Topic admin
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ('title', 'language', 'order')
+    list_display = ('title', 'language')
     list_filter = ('language',)
     ordering = ('language', 'order')
     search_fields = ('title', 'language__name')  # Topic nomi va tegishli language nomi bo‘yicha qidiruv
@@ -25,7 +25,7 @@ class TopicAdmin(admin.ModelAdmin):
 # Content admin
 @admin.register(Content)
 class ContentAdmin(admin.ModelAdmin):
-    list_display = ('topic', 'order', 'text', 'link', 'video_url')
+    list_display = ('topic',  'link')
     list_filter = ('topic',)
     ordering = ('topic', 'order')
     search_fields = ('text', 'code', 'topic__title')  # Content matni, code snippet va topic nomi bo‘yicha qidiruv
