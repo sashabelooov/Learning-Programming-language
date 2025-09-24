@@ -1,7 +1,4 @@
-
-
 {% extends "base.html" %}
-
 
 {% block title %}Home Page{% endblock %}
 
@@ -32,7 +29,7 @@
         .glass-button {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            -webkit-backup-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
             color: rgba(0, 0, 0, 0.7);
@@ -63,7 +60,7 @@
             border-radius: 1rem;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            -webkit-backup-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 
                 0 8px 24px rgba(0, 0, 0, 0.1),
@@ -97,30 +94,20 @@
         
         /* Section container with clear separation */
         .section-container {
-        padding: 8rem 4rem; /* Yuqori paddingni oshiramiz */
-        margin-bottom: 2rem;
+            padding: 12rem 6rem;
+            margin-bottom: 3rem;
+            position: relative;
         }
         
-        /* Add a subtle border between sections */
-        .section-container:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 10%;
-            width: 80%;
-            height: 1px;
-            background: rgba(0, 0, 0, 0.1);
+        /* Remove the line between sections */
+        .section-container::after {
+            display: none;
         }
         
         /* About section with circular image */
-        .about-section {
-            padding: 4rem 0;
-            margin: 2rem 0;
-        }
-        
         .about-image {
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
             object-fit: cover;
             box-shadow: 
@@ -130,18 +117,13 @@
         }
         
         /* Timeline chart section */
-        .timeline-section {
-            padding: 3rem 0;
-            margin: 2rem 0;
-        }
-        
         .timeline-container {
             padding: 2rem;
             border-radius: 1.5rem;
             margin: 2rem 0;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            -webkit-backup-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 
                 0 10px 30px rgba(0, 0, 0, 0.1),
@@ -178,12 +160,13 @@
         }
         
         .review-card {
-            min-width: 220px;
+            min-width: 180px; /* Kichikroq qilindi */
+            max-width: 180px; /* Maksimum kenglik qo'shildi */
             padding: 1rem;
             border-radius: 0.75rem;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            -webkit-backup-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 
                 0 8px 20px rgba(0, 0, 0, 0.08),
@@ -201,29 +184,33 @@
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(calc(-220px * 8 - 1rem * 8));
+                transform: translateX(calc(-180px * 8 - 1rem * 8)); /* Yangi kenglikka moslandi */
             }
         }
         
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 35px; /* Kichikroq qilindi */
+            height: 35px; /* Kichikroq qilindi */
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 0.75rem;
+            margin-right: 0.5rem; /* Kamaytirildi */
         }
         
         .star-rating {
             color: #fbbf24;
-            font-size: 0.8rem;
+            font-size: 0.7rem; /* Kichikroq qilindi */
             margin: 0.25rem 0;
         }
         
         .review-text {
-            font-size: 0.85rem;
-            line-height: 1.4;
+            font-size: 0.8rem; /* Kichikroq qilindi */
+            line-height: 1.3; /* Qisqartirildi */
             color: rgba(0, 0, 0, 0.7);
             margin-top: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Maksimum 3 qator */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         .review-user {
@@ -233,17 +220,12 @@
         }
         
         .user-info h4 {
-            font-size: 0.9rem;
+            font-size: 0.8rem; /* Kichikroq qilindi */
             margin: 0;
             color: rgba(0, 0, 0, 0.8);
         }
         
         /* Code editor section */
-        .code-editor-section {
-            padding: 3rem 0;
-            margin: 2rem 0;
-        }
-        
         .code-editor-container {
             border-radius: 1rem;
             overflow: hidden;
@@ -343,6 +325,7 @@
             border-radius: 0.5rem;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            -webkit-backup-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -358,8 +341,6 @@
             background: rgba(255, 255, 255, 0.2);
         }
     </style>
-
-
 
     <!-- Programming Languages Section -->
     <section class="section-container">
@@ -383,9 +364,6 @@
             </div>
         </div>
     </section>
-
-
-
 
     <!-- About Section -->
     <section class="section-container">
@@ -457,11 +435,7 @@
                         <div class="user-info">
                             <h4>Sarah Johnson</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                ★★★★★
                             </div>
                         </div>
                     </div>
@@ -476,11 +450,7 @@
                         <div class="user-info">
                             <h4>Michael Chen</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+                                ★★★★☆
                             </div>
                         </div>
                     </div>
@@ -495,11 +465,7 @@
                         <div class="user-info">
                             <h4>Emma Rodriguez</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                ★★★★★
                             </div>
                         </div>
                     </div>
@@ -514,11 +480,7 @@
                         <div class="user-info">
                             <h4>David Kim</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
+                                ★★★★☆
                             </div>
                         </div>
                     </div>
@@ -533,11 +495,7 @@
                         <div class="user-info">
                             <h4>Alex Turner</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                ★★★★★
                             </div>
                         </div>
                     </div>
@@ -552,11 +510,7 @@
                         <div class="user-info">
                             <h4>Sophia Martinez</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+                                ★★★★☆
                             </div>
                         </div>
                     </div>
@@ -571,11 +525,7 @@
                         <div class="user-info">
                             <h4>James Wilson</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                ★★★★★
                             </div>
                         </div>
                     </div>
@@ -590,11 +540,7 @@
                         <div class="user-info">
                             <h4>Olivia Parker</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
+                                ★★★★☆
                             </div>
                         </div>
                     </div>
@@ -610,11 +556,7 @@
                         <div class="user-info">
                             <h4>Sarah Johnson</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                ★★★★★
                             </div>
                         </div>
                     </div>
@@ -629,11 +571,7 @@
                         <div class="user-info">
                             <h4>Michael Chen</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+                                ★★★★☆
                             </div>
                         </div>
                     </div>
@@ -648,11 +586,7 @@
                         <div class="user-info">
                             <h4>Emma Rodriguez</h4>
                             <div class="star-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                                ★★★★★
                             </div>
                         </div>
                     </div>
@@ -812,7 +746,5 @@
             this.style.animationPlayState = 'running';
         });
     </script>
-
-
 
 {% endblock %}

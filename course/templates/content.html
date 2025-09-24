@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}{% if current_topic %}{{ current_topic.title }} - {% endif %}{{ language.name }} Content{% endblock %}
+
+{% block content %}
+
+<style>
+    /* content.html uchun qo'shimcha CSS */
+.content-items {
+    margin-top: 2rem;
+}
+
+.content-item {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.text-content {
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.code-content {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+.code-content pre {
+    margin: 0;
+}
+
+.resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.resource-link:hover {
+    text-decoration: underline;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.nav-links li.active a {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.content-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.content-nav a {
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.content-nav a:hover {
+    color: #007bff;
+}
+</style>
+<div class="topic-container">
+    <!-- Left Sidebar - Topics Navigation -->
+    <nav class="sidebar left-sidebar">
+        <div class="sidebar-header">
+            <h1>{{ language.name }} Topics</h1>
+        </div>
+        
+        <div class="nav-section">
+            <h2>All Topics</h2>
+            <ul class="nav-links">
+                {% for topic in topics %}
+                    <li class="{% if current_topic and topic.id == current_topic.id %}active{% endif %}">
+                        <a href="{% url 'topic_content' language.slug topic.slug %}">
+                            {{ topic.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>No topics yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="{% url 'language_topic' language.slug %}">course/{{ language.name }}</a>
+                {% if current_topic %}
+                    / <a href="{% url 'topic_content' language.slug current_topic.slug %}">{{ current_topic.title }}</a>
+                {% endif %}
+            </div>
+            
+            {% if current_topic %}
+                <h1>{{ current_topic.title }}</h1>
+            {% else %}
+                <h1>Select a Topic</h1>
+                <p>Please choose a topic from the left sidebar to view its content.</p>
+            {% endif %}
+        </div>
+
+        <!-- Content Items -->
+        {% if current_topic %}
+        <div class="content-items">
+            {% for content in contents %}
+            <div class="content-item">
+                <!-- Text Content -->
+                {% if content.text %}
+                <div class="text-content">
+                    {{ content.text|linebreaks }}
+                </div>
+                {% endif %}
+                
+                <!-- Code Content -->
+                {% if content.code %}
+                <div class="code-content">
+                    <pre><code class="language-{{ language.name|lower }}">{{ content.code }}</code></pre>
+                </div>
+                {% endif %}
+                
+                <!-- Link Content -->
+                {% if content.link %}
+                <div class="link-content">
+                    <a href="{{ content.link }}" target="_blank" class="resource-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        Additional Resource
+                    </a>
+                </div>
+                {% endif %}
+                
+                <!-- Video Content -->
+                {% if content.video_url %}
+                <div class="video-content">
+                    <div class="video-wrapper">
+                        <iframe 
+                            width="560" 
+                            height="315" 
+                            src="{{ content.video_url }}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="no-content">
+                <p>No content available for this topic yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </main>
+    
+    <!-- Right Sidebar - Content Navigation -->
+    <aside class="right-sidebar">
+        <div class="right-sidebar-content">
+            {% if current_topic %}
+            <h3>On this page</h3>
+            <ul class="content-nav">
+                {% for content in contents %}
+                <li>
+                    <a href="#content-{{ content.id }}">
+                        {% if content.text %}Text Content{% endif %}
+                        {% if content.code %}Code Example{% endif %}
+                        {% if content.link %}Resource Link{% endif %}
+                        {% if content.video_url %}Video Tutorial{% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </aside>
+</div>
+{% endblock %}

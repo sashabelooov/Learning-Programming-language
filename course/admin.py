@@ -11,9 +11,8 @@ class LanguageAdmin(admin.ModelAdmin):
 
 @admin.register(Topic)
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ('title', 'language')
-    list_filter = ('language',)
-    search_fields = ('title', 'language__name')
+    list_display = ['title', 'language', 'slug', 'order']
+    prepopulated_fields = {'slug': ('title',)}  # Slugni avtomatik to'ldirish
 
 
 @admin.register(Content)
