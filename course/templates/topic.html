@@ -1,6 +1,6 @@
 
 {% extends "base.html" %}
-
+{% load i18n %}
 
 {% block title %}Topic Page{% endblock %}
 
@@ -37,7 +37,7 @@
                 <div class="breadcrumb">
                     <a href="{% url 'language_topic' language.slug %}">course/{{ language.name }}</a>
                 </div>
-                <h1>{{ language.name }}: </h1>
+                <h1>{{ language.name }}: Topic List</h1>
             </div>
 
             <!-- Cards Section - Fixed with icons, hover effects, and 4 cards per row -->
