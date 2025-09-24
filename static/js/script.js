@@ -1,8 +1,8 @@
-// Qidiruv maydonini tozalash uchun JavaScript
+ // Search field functionality
         const searchInput = document.getElementById('searchInput');
         const clearButton = document.getElementById('clearSearch');
 
-        // Matn kiritilganda tozalash tugmasini ko'rsatish/yashirish
+        // Show/hide clear button based on input
         searchInput.addEventListener('input', () => {
             if (searchInput.value.length > 0) {
                 clearButton.classList.add('visible');
@@ -11,7 +11,7 @@
             }
         });
 
-        // Tozalash tugmasini bosganda matnni o'chirish
+        // Clear search field when button is clicked
         clearButton.addEventListener('click', () => {
             searchInput.value = '';
             clearButton.classList.remove('visible');
