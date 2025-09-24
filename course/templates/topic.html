@@ -43,25 +43,25 @@
             <!-- Cards Section - Fixed with icons, hover effects, and 4 cards per row -->
             <div class="cards-container">
                 {% for topic in topics %}
-                <a href="#" class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3 class="card-title">{{ topic.title }}</h3>
-                    <div class="card-rating">
-                        <div class="rating-stars">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= topic.rating|default:4 %}
-                                    <i class="fas fa-star"></i>
-                                {% else %}
-                                    <i class="far fa-star"></i>
-                                {% endif %}
-                            {% endfor %}
+                    <a href="{% url 'topic_content' language.slug topic.slug %}" class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-code"></i>
                         </div>
-                        <span class="rating-value">{{ topic.rating|default:4.5 }}</span>
-                    </div>
-                    <button class="card-button">Learn More</button>
-                </a>
+                        <h3 class="card-title">{{ topic.title }}</h3>
+                        <div class="card-rating">
+                            <div class="rating-stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= topic.rating|default:4 %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="rating-value">{{ topic.rating|default:4.5 }}</span>
+                        </div>
+                        <button class="card-button">Learn More</button>
+                    </a>
                 {% empty %}
                 <div class="card">
                     <div class="card-icon">
