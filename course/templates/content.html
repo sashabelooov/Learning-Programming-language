@@ -1,59 +1,148 @@
 {% extends "base.html" %}
-{% load i18n %}
 
 {% block title %}{% if current_topic %}{{ current_topic.title }} - {% endif %}{{ language.name }} Content{% endblock %}
 
 {% block content %}
-
-    <style>
-        /* content.html uchun qo'shimcha CSS */
+<style>
     .content-items {
         margin-top: 2rem;
     }
 
     .content-item {
         background: white;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #eaeaea;
+    }
+
+    .content-section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f1f5f9;
     }
 
     .text-content {
-        line-height: 1.6;
+        line-height: 1.8;
         font-size: 1.1rem;
+        color: #2d3748;
+        text-align: justify;
     }
 
-    .code-content {
-        background: #f8f9fa;
-        border: 1px solid #e9ecef;
-        border-radius: 4px;
-        padding: 1rem;
-        margin: 1rem 0;
-        overflow-x: auto;
+    .code-card {
+        background: #0f172a;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        position: relative;
+        border: 1px solid #334155;
+    }
+
+    .code-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #334155;
+    }
+
+    .code-title {
+        color: #e2e8f0;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .code-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .run-btn {
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .run-btn:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .copy-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
     }
 
     .code-content pre {
         margin: 0;
+        color: #e2e8f0;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        overflow-x: auto;
     }
 
     .resource-link {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        color: #007bff;
+        gap: 0.75rem;
+        color: #3b82f6;
         text-decoration: none;
+        padding: 1rem 1.5rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        margin: 1rem 0;
     }
 
     .resource-link:hover {
-        text-decoration: underline;
+        background: #3b82f6;
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
 
     .video-wrapper {
         position: relative;
         width: 100%;
         height: 0;
-        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        padding-bottom: 56.25%;
+        margin: 2rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     .video-wrapper iframe {
@@ -62,27 +151,188 @@
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 4px;
+        border: none;
     }
 
-    .nav-links li.active a {
-        color: #007bff;
-        font-weight: bold;
-    }
-
-    .content-nav li {
+    /* Navigation Styles */
+    .nav-links li {
+        position: relative;
         margin-bottom: 0.5rem;
     }
 
-    .content-nav a {
-        color: #6c757d;
+    .topic-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        color: #64748b;
         text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .topic-link:hover {
+        background: #f1f5f9;
+        color: #3b82f6;
+    }
+
+    .topic-link.active {
+        background: #f0f7ff;
+        color: #3b82f6;
+        font-weight: 600;
+    }
+
+    .dropdown-icon {
+        transition: transform 0.3s ease;
+        font-size: 0.8rem;
+    }
+
+    .topic-link.active .dropdown-icon {
+        transform: rotate(180deg);
+    }
+
+    .subtopics {
+        padding-left: 1rem;
+        margin-top: 0.5rem;
+        border-left: 2px solid #e2e8f0;
+        display: none;
+    }
+
+    .topic-link.active + .subtopics {
+        display: block;
+    }
+
+    .content-nav li {
+        margin-bottom: 0.75rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .content-nav a {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+        display: block;
     }
 
     .content-nav a:hover {
-        color: #007bff;
+        color: #3b82f6;
     }
-    </style>
+
+    /* Rating Styles */
+    .rating-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .rating-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: #1e293b;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .stars {
+        display: flex;
+        justify-content: center;
+        gap: 0.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .star {
+        font-size: 1.5rem;
+        color: #cbd5e1;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .star:hover,
+    .star.active {
+        color: #fbbf24;
+        transform: scale(1.1);
+    }
+
+    .rating-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        resize: vertical;
+        min-height: 60px;
+        transition: border-color 0.3s ease;
+    }
+
+    .rating-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Comment Section */
+    .comment-section {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .comment-title {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .comment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .comment-input {
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        resize: vertical;
+        min-height: 100px;
+        transition: border-color 0.3s ease;
+    }
+
+    .comment-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .submit-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-self: flex-start;
+    }
+
+    .submit-btn:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+    }
+</style>
+
 <div class="topic-container">
     <!-- Left Sidebar - Topics Navigation -->
     <nav class="sidebar left-sidebar">
@@ -94,10 +344,27 @@
             <h2>All Topics</h2>
             <ul class="nav-links">
                 {% for topic in topics %}
-                    <li class="{% if current_topic and topic.id == current_topic.id %}active{% endif %}">
-                        <a href="{% url 'topic_content' language.slug topic.slug %}">
+                    <li>
+                        <a href="{% url 'topic_content' language.slug topic.slug %}" 
+                           class="topic-link {% if current_topic and topic.id == current_topic.id %}active{% endif %}">
                             {{ topic.title }}
+                            {% if topic.subtopics.exists %}
+                                <span class="dropdown-icon">▾</span>
+                            {% endif %}
                         </a>
+                        
+                        {% if topic.subtopics.exists %}
+                        <ul class="subtopics">
+                            {% for subtopic in topic.subtopics.all %}
+                            <li>
+                                <a href="{% url 'topic_content' language.slug subtopic.slug %}" 
+                                   class="topic-link {% if current_topic and subtopic.id == current_topic.id %}active{% endif %}">
+                                    {{ subtopic.title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </li>
                 {% empty %}
                     <li>No topics yet.</li>
@@ -131,6 +398,7 @@
             <div class="content-item">
                 <!-- Text Content -->
                 {% if content.text %}
+                <h3 class="content-section-title">📝 Text Content</h3>
                 <div class="text-content">
                     {{ content.text|linebreaks }}
                 </div>
@@ -138,29 +406,48 @@
                 
                 <!-- Code Content -->
                 {% if content.code %}
-                <div class="code-content">
-                    <pre><code class="language-{{ language.name|lower }}">{{ content.code }}</code></pre>
+                <h3 class="content-section-title">💻 Code Example</h3>
+                <div class="code-card">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <i class="fas fa-code"></i>
+                            {{ language.name }} Code
+                        </div>
+                        <div class="code-actions">
+                            <button class="run-btn" onclick="runCode('code-{{ forloop.counter }}')">
+                                <i class="fas fa-play"></i> Run
+                            </button>
+                            <button class="copy-btn" onclick="copyCode('code-{{ forloop.counter }}')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="code-content">
+                        <pre><code id="code-{{ forloop.counter }}" class="language-{{ language.name|lower }}">{{ content.code }}</code></pre>
+                    </div>
                 </div>
                 {% endif %}
                 
                 <!-- Link Content -->
                 {% if content.link %}
+                <h3 class="content-section-title">🔗 Additional Resource</h3>
                 <div class="link-content">
                     <a href="{{ content.link }}" target="_blank" class="resource-link">
                         <i class="fas fa-external-link-alt"></i>
-                        Additional Resource 
-                        <p>{{ content.link }}</p>
+                        <div>
+                            <strong>Click to open resource</strong>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">{{ content.link }}</div>
+                        </div>
                     </a>
                 </div>
                 {% endif %}
                 
                 <!-- Video Content -->
                 {% if content.embed_url %}
+                <h3 class="content-section-title">🎥 Video Tutorial</h3>
                 <div class="video-content">
                     <div class="video-wrapper">
                         <iframe 
-                            width="560" 
-                            height="315" 
                             src="{{ content.embed_url }}" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -175,6 +462,31 @@
                 <p>No content available for this topic yet.</p>
             </div>
             {% endfor %}
+
+            <!-- Comment Section -->
+            <div class="comment-section">
+                <div class="comment-title">💬 Leave a Comment</div>
+                <form class="comment-form" method="post">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" class="submit-btn">Post Comment</button>
+                </form>
+            </div>
+
+            <!-- Rating Section (commentdan keyin) -->
+            <div class="rating-section">
+                <div class="rating-title">⭐ Rate this content</div>
+                <div class="stars">
+                    {% for i in "12345" %}
+                    <span class="star" data-rating="{{ i }}">★</span>
+                    {% endfor %}
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ rating_form.as_p }}
+                    <button type="submit" class="submit-btn" style="margin-top: 1rem;">Submit Rating</button>
+                </form>
+            </div>
         </div>
         {% endif %}
     </main>
@@ -187,12 +499,21 @@
             <ul class="content-nav">
                 {% for content in contents %}
                 <li>
-                    <a href="#content-{{ content.id }}">
-                        {% if content.text %}Text Content{% endif %}
-                        {% if content.code %}Code Example{% endif %}
-                        {% if content.link %}Resource Link{% endif %}
-                        {% if content.video_url %}Video Tutorial{% endif %}
-                    </a>
+                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.3rem;">
+                        {% if content.text %}📝 Text Content{% endif %}
+                        {% if content.code %}💻 Code Example{% endif %}
+                        {% if content.link %}🔗 Resource Link{% endif %}
+                        {% if content.video_url %}🎥 Video Tutorial{% endif %}
+                    </div>
+                    {% if content.text %}
+                        <a href="#">{{ content.text|truncatewords:6 }}</a>
+                    {% elif content.code %}
+                        <a href="#">Code snippet</a>
+                    {% elif content.link %}
+                        <a href="#">External resource</a>
+                    {% elif content.video_url %}
+                        <a href="#">Video tutorial</a>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>
@@ -200,4 +521,94 @@
         </div>
     </aside>
 </div>
+
+<script>
+    // Dropdown menu functionality
+    document.querySelectorAll('.topic-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.querySelector('.dropdown-icon')) {
+                e.preventDefault();
+                this.classList.toggle('active');
+            }
+        });
+    });
+
+    // Copy code functionality
+    function copyCode(elementId) {
+        const codeElement = document.getElementById(elementId);
+        const textArea = document.createElement('textarea');
+        textArea.value = codeElement.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        // Show feedback
+        const btn = event.target.closest('.copy-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        btn.style.background = '#10b981';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '#3b82f6';
+        }, 2000);
+    }
+
+    // Run code functionality (placeholder)
+    function runCode(elementId) {
+        const btn = event.target.closest('.run-btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            alert('Code execution feature will be implemented soon!');
+        }, 1000);
+    }
+
+    // Star rating functionality
+    const stars = document.querySelectorAll('.star');
+    let currentRating = 0;
+
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            currentRating = parseInt(this.getAttribute('data-rating'));
+            updateStars(currentRating);
+            
+            // Update hidden input field if exists
+            const ratingInput = document.querySelector('input[name="rating"]');
+            if (ratingInput) {
+                ratingInput.value = currentRating;
+            }
+        });
+        
+        star.addEventListener('mouseover', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            updateStars(rating, false);
+        });
+        
+        star.addEventListener('mouseout', function() {
+            updateStars(currentRating, false);
+        });
+    });
+
+    function updateStars(rating, permanent = true) {
+        stars.forEach(star => {
+            if (parseInt(star.getAttribute('data-rating')) <= rating) {
+                star.classList.add('active');
+                if (permanent) {
+                    star.style.color = '#fbbf24';
+                }
+            } else {
+                star.classList.remove('active');
+                if (permanent) {
+                    star.style.color = '#cbd5e1';
+                }
+            }
+        });
+    }
+</script>
 {% endblock %}
