@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktiv Menyu</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #1e1e1e; /* To'qroq fon */
+            color: white;
+            margin: 0;
+            padding: 20px;
+            /* Markazga joylashtirish uchun flexbox ishlatamiz */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Kontentni vertikal markazga joylash */
+            align-items: center; /* Kontentni gorizontal markazga joylash */
+            min-height: 100vh; /* Sahifa balandligini to'liq olish uchun */
+            gap: 20px; /* Logotip va chat maydoni orasidagi masofa */
+        }
+
+        .top-bar {
+            /* Position the top bar at the top of the viewport */
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Logo va tugmalar orasidagi masofa */
+        }
+
+        /* "Pilla" shaklidagi tugmalar guruhi */
+        .button-group {
+            display: flex;
+            align-items: center;
+            background-color: #333333;
+            border-radius: 50px; /* To'liq yumaloq qirralar */
+            padding: 4px;
+            border: 1px solid #4a4a4e;
+        }
+
+        /* Ikonkali tugmalar uchun umumiy stil */
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background-color: transparent; /* Orqa fon shaffof */
+            border: none;
+            border-radius: 50%; /* Tugmalarni dumaloq qilish */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Sichqoncha olib borganda yengil fon */
+        }
+
+        .icon-btn svg {
+            stroke: #e0e0e0; /* Ikonka ranggi */
+        }
+
+        /* Yon menyu (Sidebar) uchun stillar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px; /* Boshida ekran tashqarisida */
+            width: 280px;
+            height: 100%;
+            background-color: #1e1e1e;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease-in-out;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #4a4a4e;
+            z-index: 1000;
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #4a4a4e;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+        }
+        
+        /* Chat input section styles */
+        .chat-input-area {
+            background-color: #2b2b2b;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0; /* Vertikal markazga joylash uchun avtomatik marginni olib tashladik */
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adding a shadow to match the image */
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 48px;
+            max-height: 200px;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0;
+            outline: none;
+            font-size: 16px;
+            resize: none;
+            box-sizing: border-box;
+            line-height: 1.5;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow-y: auto;
+        }
+
+        .text-input::-webkit-scrollbar {
+            display: none;
+        }
+
+        .bottom-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-group-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button-group-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn {
+            width: 38px;
+            height: 38px;
+            background-color: #4a4a4e;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            border-radius: 12px;
+        }
+
+        .control-btn:hover {
+            background-color: #5a5a5e;
+        }
+
+        .control-btn svg {
+            fill: white;
+            stroke: white;
+            stroke-width: 1.5;
+        }
+
+        .model-select-btn {
+            background: transparent;
+            border: none;
+            color: #d1d1d1;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .model-select-btn:hover {
+            background-color: #4a4a4e;
+        }
+
+        .model-select-btn svg {
+            stroke: #d1d1d1;
+        }
+
+        .send-btn {
+            background-color: #e35a39;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+        }
+
+        .send-btn:hover {
+            background-color: #f16c4a;
+        }
+        
+        .extra-buttons-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .extra-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: none;
+            color: white;
+        }
+
+        .extra-btn.deep-think {
+            background-color: #444791;
+        }
+
+        .extra-btn.deep-think:hover {
+            background-color: #5154a4;
+        }
+
+        .extra-btn.search {
+            background-color: transparent;
+            border: 1px solid #4a4a4e;
+        }
+
+        .extra-btn.search:hover {
+            background-color: #333;
+        }
+
+        .extra-btn svg {
+            fill: white;
+        }
+
+        /* Styles for the logo and heading, now outside the chat-input-area */
+        .logo-and-text {
+            display: flex;
+            align-items: center; /* Align items horizontally */
+            gap: 12px;
+            margin: 0; /* Vertikal markazga joylash uchun avtomatik marginni olib tashladik */
+        }
+
+        .logo-and-text .logo {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-and-text .logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-and-text .welcome-text {
+            font-size: 32px;
+            font-weight: 500;
+            margin: 0;
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="button-group">
+            <button class="icon-btn" id="openMenuBtn" aria-label="Menyuni ochish">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.75 18L3 18C2.44772 18 2 17.5523 2 17L2 7C2 6.44772 2.44772 6 3 6L9.75 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L22 6C22.5523 6 23 6.44772 23 7V17C23 17.5523 22.5523 18 22 18L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="icon-btn" id="newChatBtn" aria-label="Yangi chat boshlash">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 8V16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 12H16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menyu</h3>
+            <button class="icon-btn" id="closeMenuBtn" aria-label="Menyuni yopish">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.75 18L3 18C2.44772 18 2 17.5523 2 17L2 7C2 6.44772 2.44772 6 3 6L9.75 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L22 6C22.5523 6 23 6.44772 23 7V17C23 17.5523 22.5523 18 22 18L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <p>Menyu kontenti shu yerda bo'ladi...</p>
+        </div>
+    </div>
+    
+    <!-- Logo and welcome text placed outside the input area -->
+    <div class="logo-and-text">
+        <div class="logo">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="23" stroke="#e35a39" stroke-width="2"/>
+                <path d="M14 24L24 14L34 24L24 34L14 24Z" fill="#e35a39"/>
+            </svg>
+        </div>
+        <h2 class="welcome-text">How can I help you today?</h2>
+    </div>
+
+    <!-- The main chat input area -->
+    <div class="chat-input-area">
+        <textarea class="text-input" placeholder="How can I help you today?"></textarea>
+        <div class="bottom-controls">
+            <div class="button-group-left">
+                <button class="control-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#a4a4a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 8V16" stroke="#a4a4a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 12H16" stroke="#a4a4a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="control-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 14H20M4 10H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="extra-buttons-input">
+                    <button class="extra-btn deep-think">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L6 12L12 22L18 12L12 2Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="5" stroke="white" stroke-width="1.5"/>
+                        </svg>
+                        DeepThink
+                    </button>
+                    <button class="extra-btn search">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 2C13.8214 2 15.5291 2.48697 17 3.33782C18.4709 4.18867 19.8113 5.52913 20.6622 7C21.513 8.47087 22 10.1786 22 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12C2 10.1786 2.48697 8.47087 3.33782 7C4.18867 5.52913 5.52913 4.18867 7 3.33782" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+            </div>
+            <div class="button-group-right">
+                <button class="model-select-btn">
+                    Sonnet 4
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 9L12 15L18 9" stroke="#d1d1d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <button class="control-btn send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 14L22 12L17 10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 12H2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openMenuBtn = document.getElementById('openMenuBtn');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const newChatBtn = document.getElementById('newChatBtn');
+            const sidebar = document.getElementById('sidebar');
+            const textArea = document.querySelector('.text-input');
+
+            // Function to resize textarea automatically
+            function autoResizeTextArea() {
+                textArea.style.height = 'auto';
+                textArea.style.height = textArea.scrollHeight + 'px';
+            }
+            
+            // Listen for input events on the textarea
+            textArea.addEventListener('input', autoResizeTextArea);
+
+            // Menyu ochish tugmasi bosilganda
+            openMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+
+            // Menyudagi yopish tugmasi bosilganda
+            closeMenuBtn.addEventListener('click', () => {
+                sidebar.classList.remove('show');
+            });
+            
+            // Yangi chat tugmasi bosilganda (hozircha shunchaki konsolga xabar chiqaradi)
+            newChatBtn.addEventListener('click', () => {
+                console.log('Yangi chat boshlandi!');
+                // Bu yerga yangi chat ochish logikasini qo'shishingiz mumkin
+            });
+        });
+    </script>
+</body>
+</html>
