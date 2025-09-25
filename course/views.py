@@ -22,7 +22,59 @@ def language_view(request, language_slug):
         "topics": topics,
     })
 
+
+
 def content_view(request, language_slug, topic_slug):
+    language = get_object_or_404(Language, slug=language_slug)
+    topics = language.topics.filter(parent__isnull=True).order_by("order")
+    current_topic = get_object_or_404(Topic, slug=topic_slug, language=language)
+    contents = current_topic.contents.all().order_by("order")
+    
+    comment_form = CommentForm()
+    rating_form = RatingForm()
+
+    if request.method == 'POST':
+        if 'text' in request.POST:  # Comment form
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.content = contents.first()  # birinchi content ga comment
+                if request.user.is_authenticated:
+                    comment.user = request.user
+                    comment.name = request.user.username
+                comment.save()
+                return redirect('topic_content', language_slug=language_slug, topic_slug=topic_slug)
+        
+        elif 'rating' in request.POST:
+            if request.user.is_authenticated:
+                rating_form = RatingForm(request.POST)
+                if rating_form.is_valid():
+                    rating = rating_form.save(commit=False)
+                    rating.content = contents.first()
+                    rating.user = request.user
+                    Rating.objects.filter(content=rating.content, user=request.user).delete()
+                    rating.save()
+                    return redirect('topic_content', language_slug=language_slug, topic_slug=topic_slug)
+
+    for c in contents:
+        if c.video_url:
+            c.embed_url = to_embed_url(c.video_url)
+        else:
+            c.embed_url = None
+
+    return render(request, "content.html", {
+        "language": language,
+        "topics": topics,
+        "current_topic": current_topic,
+        "contents": contents,
+        "comment_form": comment_form,
+        "rating_form": rating_form,
+    })
+
+
+
+
+# def content_view(request, language_slug, topic_slug):
     language = get_object_or_404(Language, slug=language_slug)
     topics = language.topics.filter(parent__isnull=True).order_by("order")
     current_topic = get_object_or_404(Topic, slug=topic_slug, language=language)

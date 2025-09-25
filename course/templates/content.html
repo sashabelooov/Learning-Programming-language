@@ -62,20 +62,20 @@
 
     .code-actions {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.75rem;
     }
 
     .run-btn {
         background: #10b981;
         color: white;
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
+        justify-content: center;
         transition: all 0.3s ease;
     }
 
@@ -89,13 +89,14 @@
         color: white;
         border: none;
         border-radius: 6px;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 0.75rem;
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         transition: all 0.3s ease;
+        height: 40px;
     }
 
     .copy-btn:hover {
@@ -169,6 +170,7 @@
         text-decoration: none;
         border-radius: 6px;
         transition: all 0.3s ease;
+        width: 100%;
     }
 
     .topic-link:hover {
@@ -185,10 +187,12 @@
     .dropdown-icon {
         transition: transform 0.3s ease;
         font-size: 0.8rem;
+        color: #94a3b8;
     }
 
     .topic-link.active .dropdown-icon {
         transform: rotate(180deg);
+        color: #3b82f6;
     }
 
     .subtopics {
@@ -242,25 +246,34 @@
     .stars {
         display: flex;
         justify-content: center;
-        gap: 0.3rem;
+        gap: 0.5rem;
         margin-bottom: 1rem;
     }
 
     .star {
-        font-size: 1.5rem;
+        font-size: 2rem;
         color: #cbd5e1;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-weight: bold;
     }
 
     .star:hover,
     .star.active {
         color: #fbbf24;
-        transform: scale(1.1);
+        transform: scale(1.2);
+    }
+
+    .rating-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
     }
 
     .rating-input {
         width: 100%;
+        max-width: 500px;
         padding: 0.75rem;
         border: 1px solid #e2e8f0;
         border-radius: 8px;
@@ -298,6 +311,17 @@
         gap: 1rem;
     }
 
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #374151;
+    }
+
     .comment-input {
         padding: 1rem;
         border: 1px solid #e2e8f0;
@@ -306,9 +330,26 @@
         resize: vertical;
         min-height: 100px;
         transition: border-color 0.3s ease;
+        width: 100%;
     }
 
     .comment-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .name-input {
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        max-width: 300px;
+        width: 100%;
+    }
+
+    .name-input:focus {
         outline: none;
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -324,12 +365,107 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        align-self: flex-start;
     }
 
     .submit-btn:hover {
         background: #2563eb;
         transform: translateY(-2px);
+    }
+
+    .submit-btn-center {
+        align-self: center;
+        margin-top: 1rem;
+    }
+
+    /* Comments List */
+    .comments-list {
+        margin-top: 2rem;
+    }
+
+    .comment-item {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #3b82f6;
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .comment-author {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .comment-date {
+        color: #64748b;
+        font-size: 0.85rem;
+    }
+
+    .comment-text {
+        color: #374151;
+        line-height: 1.6;
+    }
+
+    /* Topic Icons */
+    .topic-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .topic-link.active .topic-icon {
+        color: #3b82f6;
+    }
+
+    /* Content Type Separation */
+    .content-type-separator {
+        margin: 2rem 0;
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+
+    /* Updated styles for topic links */
+    .topic-link-content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+    }
+
+    .topic-title {
+        flex: 1;
+    }
+
+    /* Updated comment button styles */
+    .comment-submit-btn {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        align-self: flex-start;
+        width: auto;
+    }
+
+    .comment-submit-btn:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
     }
 </style>
 
@@ -347,9 +483,12 @@
                     <li>
                         <a href="{% url 'topic_content' language.slug topic.slug %}" 
                            class="topic-link {% if current_topic and topic.id == current_topic.id %}active{% endif %}">
-                            {{ topic.title }}
+                            <div class="topic-link-content">
+                                <i class="fas fa-folder topic-icon"></i>
+                                <span class="topic-title">{{ topic.title }}</span>
+                            </div>
                             {% if topic.subtopics.exists %}
-                                <span class="dropdown-icon">▾</span>
+                                <i class="fas fa-chevron-down dropdown-icon"></i>
                             {% endif %}
                         </a>
                         
@@ -359,7 +498,10 @@
                             <li>
                                 <a href="{% url 'topic_content' language.slug subtopic.slug %}" 
                                    class="topic-link {% if current_topic and subtopic.id == current_topic.id %}active{% endif %}">
-                                    {{ subtopic.title }}
+                                    <div class="topic-link-content">
+                                        <i class="fas fa-file topic-icon"></i>
+                                        <span class="topic-title">{{ subtopic.title }}</span>
+                                    </div>
                                 </a>
                             </li>
                             {% endfor %}
@@ -398,15 +540,18 @@
             <div class="content-item">
                 <!-- Text Content -->
                 {% if content.text %}
-                <h3 class="content-section-title">📝 Text Content</h3>
+                <h3 class="content-section-title"><i class="fas fa-file-text"></i> Text Content</h3>
                 <div class="text-content">
                     {{ content.text|linebreaks }}
                 </div>
+                {% if content.code or content.link or content.embed_url %}
+                    <hr class="content-type-separator">
+                {% endif %}
                 {% endif %}
                 
                 <!-- Code Content -->
                 {% if content.code %}
-                <h3 class="content-section-title">💻 Code Example</h3>
+                <h3 class="content-section-title"><i class="fas fa-code"></i> Code Example</h3>
                 <div class="code-card">
                     <div class="code-header">
                         <div class="code-title">
@@ -414,8 +559,8 @@
                             {{ language.name }} Code
                         </div>
                         <div class="code-actions">
-                            <button class="run-btn" onclick="runCode('code-{{ forloop.counter }}')">
-                                <i class="fas fa-play"></i> Run
+                            <button class="run-btn" onclick="runCode('code-{{ forloop.counter }}')" title="Run Code">
+                                <i class="fas fa-play"></i>
                             </button>
                             <button class="copy-btn" onclick="copyCode('code-{{ forloop.counter }}')">
                                 <i class="fas fa-copy"></i> Copy
@@ -426,11 +571,14 @@
                         <pre><code id="code-{{ forloop.counter }}" class="language-{{ language.name|lower }}">{{ content.code }}</code></pre>
                     </div>
                 </div>
+                {% if content.link or content.embed_url %}
+                    <hr class="content-type-separator">
+                {% endif %}
                 {% endif %}
                 
                 <!-- Link Content -->
                 {% if content.link %}
-                <h3 class="content-section-title">🔗 Additional Resource</h3>
+                <h3 class="content-section-title"><i class="fas fa-external-link-alt"></i> Additional Resource</h3>
                 <div class="link-content">
                     <a href="{{ content.link }}" target="_blank" class="resource-link">
                         <i class="fas fa-external-link-alt"></i>
@@ -440,11 +588,14 @@
                         </div>
                     </a>
                 </div>
+                {% if content.embed_url %}
+                    <hr class="content-type-separator">
+                {% endif %}
                 {% endif %}
                 
                 <!-- Video Content -->
                 {% if content.embed_url %}
-                <h3 class="content-section-title">🎥 Video Tutorial</h3>
+                <h3 class="content-section-title"><i class="fas fa-video"></i> Video Tutorial</h3>
                 <div class="video-content">
                     <div class="video-wrapper">
                         <iframe 
@@ -463,17 +614,7 @@
             </div>
             {% endfor %}
 
-            <!-- Comment Section -->
-            <div class="comment-section">
-                <div class="comment-title">💬 Leave a Comment</div>
-                <form class="comment-form" method="post">
-                    {% csrf_token %}
-                    {{ comment_form.as_p }}
-                    <button type="submit" class="submit-btn">Post Comment</button>
-                </form>
-            </div>
-
-            <!-- Rating Section (commentdan keyin) -->
+            <!-- Rating Section -->
             <div class="rating-section">
                 <div class="rating-title">⭐ Rate this content</div>
                 <div class="stars">
@@ -481,11 +622,57 @@
                     <span class="star" data-rating="{{ i }}">★</span>
                     {% endfor %}
                 </div>
-                <form method="post">
+                <form method="post" class="rating-form">
                     {% csrf_token %}
                     {{ rating_form.as_p }}
-                    <button type="submit" class="submit-btn" style="margin-top: 1rem;">Submit Rating</button>
+                    <button type="submit" class="submit-btn submit-btn-center">Submit Rating</button>
                 </form>
+            </div>
+
+            <!-- Comment Section -->
+            <div class="comment-section">
+                <div class="comment-title"><i class="fas fa-comments"></i> Leave a Comment</div>
+                <form class="comment-form" method="post">
+                    {% csrf_token %}
+                    <!-- Always show name input field for comments -->
+                    <div class="form-group">
+                        <label for="id_name">Your Name:</label>
+                        <input type="text" name="name" class="name-input" id="id_name" 
+                               placeholder="Enter your name" required
+                               value="{% if user.is_authenticated %}{{ user.username }}{% endif %}"
+                               {% if user.is_authenticated %}readonly{% endif %}>
+                        {% if user.is_authenticated %}
+                        <small style="color: #64748b; margin-top: 0.25rem;">Logged in as {{ user.username }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_text">Your Comment:</label>
+                        <textarea name="text" class="comment-input" id="id_text" placeholder="Share your thoughts about this content..." required></textarea>
+                    </div>
+                    <button type="submit" class="comment-submit-btn">Post Comment</button>
+                </form>
+
+                <!-- Display Existing Comments -->
+                {% if contents.first and contents.first.comments.all %}
+                <div class="comments-list">
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Comments ({{ contents.first.comments.count }})</h3>
+                    {% for comment in contents.first.comments.all %}
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-author">
+                                {% if comment.user %}
+                                    {{ comment.user.username }}
+                                {% else %}
+                                    {{ comment.name }}
+                                {% endif %}
+                            </span>
+                            <span class="comment-date">{{ comment.created_at|date:"F j, Y, g:i a" }}</span>
+                        </div>
+                        <div class="comment-text">{{ comment.text }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
         {% endif %}
@@ -500,10 +687,10 @@
                 {% for content in contents %}
                 <li>
                     <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.3rem;">
-                        {% if content.text %}📝 Text Content{% endif %}
-                        {% if content.code %}💻 Code Example{% endif %}
-                        {% if content.link %}🔗 Resource Link{% endif %}
-                        {% if content.video_url %}🎥 Video Tutorial{% endif %}
+                        {% if content.text %}<i class="fas fa-file-text"></i> Text Content{% endif %}
+                        {% if content.code %}<i class="fas fa-code"></i> Code Example{% endif %}
+                        {% if content.link %}<i class="fas fa-external-link-alt"></i> Resource Link{% endif %}
+                        {% if content.video_url %}<i class="fas fa-video"></i> Video Tutorial{% endif %}
                     </div>
                     {% if content.text %}
                         <a href="#">{{ content.text|truncatewords:6 }}</a>
@@ -559,7 +746,7 @@
     function runCode(elementId) {
         const btn = event.target.closest('.run-btn');
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         btn.disabled = true;
         
         setTimeout(() => {
@@ -610,5 +797,13 @@
             }
         });
     }
+
+    // Auto-focus comment textarea
+    document.addEventListener('DOMContentLoaded', function() {
+        const commentTextarea = document.getElementById('id_text');
+        if (commentTextarea) {
+            commentTextarea.focus();
+        }
+    });
 </script>
 {% endblock %}
