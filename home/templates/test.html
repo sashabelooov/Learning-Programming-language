@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qora Fondagi Layout</title>
+    <!-- Tailwind CSS CDN ni qo'shish (Majburiy) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Umumiy konteyner balandligini belgilash uchun maxsus CSS olib tashlandi */
+        /* Chunki endi butun sahifa bo'ylab qoplanadi (h-screen ishlatiladi) */
+    </style>
+</head>
+<!-- Body uchun faqat fon rangini va matn rangini belgilash (padding olib tashlandi) -->
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+
+    <!-- Kontentni butun sahifa bo'ylab qoplashi uchun h-screen w-full qo'shildi -->
+    <div data-hs-layout-splitter='{
+          "horizontalSplitterTemplate": "<div><span class=\"absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 block w-4 h-6 flex justify-center items-center bg-white border border-gray-200 text-gray-400 rounded-md cursor-col-resize hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-600 dark:hover:bg-neutral-900\"><svg class=\"shrink-0 size-3.5\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"12\" r=\"1\"/><circle cx=\"9\" cy=\"5\" r=\"1\"/><circle cx=\"9\" cy=\"19\" r=\"1\"/><circle cx=\"15\" cy=\"12\" r=\"1\"/><circle cx=\"15\" cy=\"5\" r=\"1\"/><circle cx=\"15\" cy=\"19\" r=\"1\"/></svg></span></div>",
+          "horizontalSplitterClasses": "relative flex border-s border-gray-200 dark:border-neutral-700",
+          "verticalSplitterTemplate": "<div><span class=\"absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 block w-6 h-4 flex justify-center items-center bg-white border border-gray-200 text-gray-400 rounded-md cursor-row-resize hover:bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-600 dark:hover:bg-neutral-900\"><svg class=\"shrink-0 size-3.5\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"9\" r=\"1\"/><circle cx=\"19\" cy=\"9\" r=\"1\"/><circle cx=\"5\" cy=\"9\" r=\"1\"/><circle cx=\"12\" cy=\"15\" r=\"1\"/><circle cx=\"19\" cy=\"15\" r=\"1\"/><circle cx=\"5\" cy=\"15\" r=\"1\"/></svg></span></div>",
+          "verticalSplitterClasses": "relative flex border-t border-gray-200 dark:border-neutral-700"
+        }'
+        class="h-screen w-full"
+    >
+          <!-- Asosiy konteyner: border, shadow, rounded-xl olib tashlandi, h-full qoldirildi -->
+          <div class="flex flex-col h-full dark:bg-gray-800">
+            
+            <!-- TOP qismi - Balandlik 30.0% dan 15.0% ga o'zgartirildi -->
+            <div class="overflow-hidden" data-hs-layout-splitter-item="15.0" style="flex: 15 1 0px;">
+              <div class="flex items-center justify-center h-full p-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-neutral-200 border-b border-gray-200 dark:border-neutral-700">
+                <span class="font-bold text-xl">Top Panel</span>
+              </div>
+            </div>
+
+            <!-- O'rta (LEFT/CENTER/RIGHT) qismi - Balandlik 50.0% dan 75.0% ga o'zgartirildi -->
+            <div class="overflow-hidden" data-hs-layout-splitter-item="75.0" style="flex: 75 1 0px;">
+              <div class="flex h-full" data-hs-layout-splitter-horizontal-group="">
+                
+                <!-- LEFT qismi -->
+                <div class="overflow-hidden h-full" data-hs-layout-splitter-item="48.2" style="flex: 48.2 1 0px;">
+                  <div class="flex items-center justify-center h-full p-3 dark:bg-gray-700/50 border-r border-gray-200 dark:border-neutral-700">
+                    <span class="font-medium">Left Menu</span>
+                  </div>
+                </div>
+                
+                <!-- CENTER qismi -->
+                <div class="overflow-hidden h-full" data-hs-layout-splitter-item="30.0" style="flex: 30 1 0px;">
+                  <div class="flex items-center justify-center h-full p-3 dark:bg-gray-700 border-r border-gray-200 dark:border-neutral-700">
+                    <span class="font-medium">Center Content</span>
+                  </div>
+                </div>
+                
+                <!-- RIGHT qismi -->
+                <div class="overflow-hidden h-full" data-hs-layout-splitter-item="21.8" style="flex: 21.8 1 0px;">
+                  <div class="flex items-center justify-center h-full p-3 dark:bg-gray-700/50">
+                    <span class="font-medium">Right Sidebar</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTTOM qismi - Balandlik 20.0% dan 10.0% ga o'zgartirildi -->
+            <div class="overflow-hidden" data-hs-layout-splitter-item="10.0" style="flex: 10 1 0px;">
+              <div class="flex items-center justify-center h-full p-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-neutral-200 border-t border-gray-200 dark:border-neutral-700">
+                <span class="font-bold text-xl">Bottom Bar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    <!-- Layout Splitter funksiyasini ishga tushirish uchun Preline JS qo'shildi -->
+    <script src="https://cdn.jsdelivr.net/npm/preline/dist/preline.js"></script>
+</body>
+</html>
