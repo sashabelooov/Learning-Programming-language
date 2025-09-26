@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interaktiv Menyu</title>
+    <!-- Font Awesome ikonalarini yuklash -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -11,13 +13,14 @@
             color: white;
             margin: 0;
             padding: 20px;
-            /* Markazga joylashtirish uchun flexbox ishlatamiz */
+            /* Kontentni vertikal markazga joylash uchun flexbox */
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Kontentni vertikal markazga joylash */
-            align-items: center; /* Kontentni gorizontal markazga joylash */
+            justify-content: center; 
+            align-items: center; 
             min-height: 100vh; /* Sahifa balandligini to'liq olish uchun */
             gap: 20px; /* Logotip va chat maydoni orasidagi masofa */
+            box-sizing: border-box;
         }
 
         .top-bar {
@@ -107,9 +110,9 @@
             gap: 12px;
             width: 100%;
             max-width: 800px;
-            margin: 0; /* Vertikal markazga joylash uchun avtomatik marginni olib tashladik */
+            margin: 0; 
             box-sizing: border-box;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adding a shadow to match the image */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
         }
 
         .text-input {
@@ -144,12 +147,55 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            position: relative; /* Dropdownlarni joylash uchun */
         }
 
         .button-group-right {
             display: flex;
             align-items: center;
             gap: 8px;
+            position: relative; /* Dropdown joylashishi uchun */
+        }
+        
+        /* Dropdown uchun umumiy stillar */
+        .dropdown-container {
+            position: relative;
+            display: inline-block; 
+        }
+
+        .dropdown {
+            position: absolute;
+            top: calc(100% + 8px); /* Tugmaning ostida joylash */
+            left: 0;
+            background-color: #333333;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        /* menyu pastga qarab ochilishi uchun stil */
+        .dropdown.show-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            color: #d1d1d1;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background-color: #4a4a4e;
         }
 
         .control-btn {
@@ -175,6 +221,12 @@
             stroke-width: 1.5;
         }
 
+        /* Font Awesome ikonkalari uchun yangi stil */
+        .control-btn i {
+            color: white;
+            font-size: 18px;
+        }
+
         .model-select-btn {
             background: transparent;
             border: none;
@@ -187,6 +239,8 @@
             padding: 8px;
             border-radius: 12px;
             transition: background-color 0.2s ease;
+            /* Dropdown bilan birga turishi uchun */
+            position: relative; 
         }
 
         .model-select-btn:hover {
@@ -197,63 +251,80 @@
             stroke: #d1d1d1;
         }
 
+        /* Send tugmasining yangi rangi */
         .send-btn {
-            background-color: #e35a39;
-            border-radius: 12px;
+            background-color: #3b82f6; /* Moviy rang */
+            border-radius: 50%; /* Make it circular */
             width: 48px;
             height: 48px;
         }
 
         .send-btn:hover {
-            background-color: #f16c4a;
+            background-color: #60a5fa; /* Moviy rang ustida sichqoncha */
         }
         
         .extra-buttons-input {
             display: flex;
             gap: 8px;
         }
-
+        
+        /* "DeepThink" va "Search" tugmalari uchun umumiy stillar */
         .extra-btn {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 8px 16px; /* Kichiklashtirildi */
             border-radius: 50px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s ease;
-            border: none;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border: 1px solid #4a4a4e; /* Umumiy chegara */
+            background-color: #4a4a4e; /* Umumiy fon rangi */
+            color: #d1d1d1; 
+        }
+        
+        .extra-btn.active {
+            background-color: #3b82f6; /* Bosilganda ko'k rang */
+            border-color: #3b82f6;
             color: white;
         }
 
-        .extra-btn.deep-think {
-            background-color: #444791;
+        .extra-btn.active img {
+            filter: none; /* Ko'k rang fonida rangini o'zgartirmaydi */
         }
 
-        .extra-btn.deep-think:hover {
-            background-color: #5154a4;
+        /* Tugmalar ustiga sichqoncha olib borilganda */
+        .extra-btn:hover {
+            background-color: #3b82f6;
+            border-color: #3b82f6; /* chegara rangini ham o'zgartiramiz */
+            color: white;
+        }
+        
+        .extra-btn:hover img {
+            filter: none;
         }
 
-        .extra-btn.search {
-            background-color: transparent;
-            border: 1px solid #4a4a4e;
+        /* Ikonkalarga mos stillar */
+        .extra-btn i {
+            font-size: 16px;
+            color: white; /* Ikonka rangi endi oq */
         }
 
-        .extra-btn.search:hover {
-            background-color: #333;
+        .extra-btn img {
+            width: 20px; /* Ikonka o'lchami kichiklashtirildi */
+            height: 20px; /* Ikonka o'lchami kichiklashtirildi */
+            filter: invert(1); /* Oq rangga o'zgartirildi */
         }
 
-        .extra-btn svg {
-            fill: white;
-        }
 
         /* Styles for the logo and heading, now outside the chat-input-area */
         .logo-and-text {
-            display: flex;
-            align-items: center; /* Align items horizontally */
+            display: flex; /* Flexbox yoqildi */
+            flex-direction: row; /* Elementlar bir qatorda joylashadi */
+            align-items: center; /* Vertikal markazga joylashtirish */
             gap: 12px;
-            margin: 0; /* Vertikal markazga joylash uchun avtomatik marginni olib tashladik */
+            margin: 0 0 20px 0; /* Pastdan ozgina masofa qo'shamiz */
         }
 
         .logo-and-text .logo {
@@ -278,8 +349,16 @@
     </style>
 </head>
 <body>
-
+    
     <div class="top-bar">
+        <!-- Logotip endi tugmalar guruhidan tashqarida -->
+        <div class="logo">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="23" stroke="#e35a39" stroke-width="2"/>
+                <path d="M14 24L24 14L34 24L24 34L14 24Z" fill="#e35a39"/>
+            </svg>
+        </div>
+        
         <div class="button-group">
             <button class="icon-btn" id="openMenuBtn" aria-label="Menyuni ochish">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -288,9 +367,10 @@
                     <path d="M9.75 6L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
+            
             <button class="icon-btn" id="newChatBtn" aria-label="Yangi chat boshlash">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17/L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M12 8V16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M8 12H16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -304,7 +384,7 @@
             <button class="icon-btn" id="closeMenuBtn" aria-label="Menyuni yopish">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M9.75 18L3 18C2.44772 18 2 17.5523 2 17L2 7C2 6.44772 2.44772 6 3 6L9.75 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9.75 6L22 6C22.5523 6 23 6.44772 23 7V17C23 17.5523 22.5523 18 22 18L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L22 6C22.5523 6 23 6.44772 23 7V17C23 17.5523 22.5523 18 22 18/L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M9.75 6L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
@@ -314,7 +394,6 @@
         </div>
     </div>
     
-    <!-- Logo and welcome text placed outside the input area -->
     <div class="logo-and-text">
         <div class="logo">
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -325,53 +404,55 @@
         <h2 class="welcome-text">How can I help you today?</h2>
     </div>
 
-    <!-- The main chat input area -->
     <div class="chat-input-area">
         <textarea class="text-input" placeholder="How can I help you today?"></textarea>
         <div class="bottom-controls">
             <div class="button-group-left">
-                <button class="control-btn">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#a4a4a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 8V16" stroke="#a4a4a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M8 12H16" stroke="#a4a4a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <button class="control-btn">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 14H20M4 10H20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
+                <div class="dropdown-container">
+                    <button class="control-btn" id="uploadBtn" aria-label="Fayl yuklash" aria-expanded="false" aria-controls="uploadDropdown">
+                        <i class="fa-solid fa-upload"></i>
+                    </button>
+                    <div class="dropdown" id="uploadDropdown" role="menu">
+                        <div class="dropdown-item" role="menuitem">Kompyuterdan yuklash</div>
+                        <div class="dropdown-item" role="menuitem">URL orqali yuklash</div>
+                    </div>
+                </div>
+                <div class="dropdown-container">
+                    <button class="control-btn" id="slidersBtn" aria-label="Yangi qator qo'shish" aria-expanded="false" aria-controls="slidersDropdown">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                    <div class="dropdown" id="slidersDropdown" role="menu">
+                        <div class="dropdown-item" role="menuitem">Kengaytirilgan sozlamalar</div>
+                        <div class="dropdown-item" role="menuitem">Formatlash</div>
+                    </div>
+                </div>
                 <div class="extra-buttons-input">
-                    <button class="extra-btn deep-think">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L6 12L12 22L18 12L12 2Z" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="12" cy="12" r="5" stroke="white" stroke-width="1.5"/>
-                        </svg>
+                    <button class="extra-btn" id="deepThinkBtn" aria-label="DeepThink rejimi">
+                         <img width="48" height="48" src="https://img.icons8.com/parakeet-line/48/telescope.png" alt="telescope"/>
                         DeepThink
                     </button>
-                    <button class="extra-btn search">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 2C13.8214 2 15.5291 2.48697 17 3.33782C18.4709 4.18867 19.8113 5.52913 20.6622 7C21.513 8.47087 22 10.1786 22 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2 12C2 10.1786 2.48697 8.47087 3.33782 7C4.18867 5.52913 5.52913 4.18867 7 3.33782" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                    <button class="extra-btn" id="searchBtn" aria-label="Qidiruv funksiyasi">
+                        <img width="50" height="50" src="https://img.icons8.com/ios/50/globe--v1.png" alt="globe--v1"/>
                         Search
                     </button>
                 </div>
             </div>
             <div class="button-group-right">
-                <button class="model-select-btn">
-                    Sonnet 4
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 9L12 15L18 9" stroke="#d1d1d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-                <button class="control-btn send-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 14L22 12L17 10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M22 12H2" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
+                <div class="dropdown-container">
+                    <button class="model-select-btn" id="modelSelectBtn" aria-expanded="false" aria-controls="modelDropdown">
+                        Sonnet 4
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9L12 15L18 9" stroke="#d1d1d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown" id="modelDropdown" role="menu">
+                        <div class="dropdown-item" role="menuitem">Opus 5</div>
+                        <div class="dropdown-item" role="menuitem">Sonnet 4</div>
+                        <div class="dropdown-item" role="menuitem">Haiku</div>
+                    </div>
+                </div>
+                <button class="control-btn send-btn" aria-label="Xabar yuborish">
+                    <i class="fa-solid fa-arrow-up"></i>
                 </button>
             </div>
         </div>
@@ -384,6 +465,15 @@
             const newChatBtn = document.getElementById('newChatBtn');
             const sidebar = document.getElementById('sidebar');
             const textArea = document.querySelector('.text-input');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const slidersBtn = document.getElementById('slidersBtn');
+            const modelSelectBtn = document.getElementById('modelSelectBtn');
+            const uploadDropdown = document.getElementById('uploadDropdown');
+            const slidersDropdown = document.getElementById('slidersDropdown');
+            const modelDropdown = document.getElementById('modelDropdown');
+            const deepThinkBtn = document.getElementById('deepThinkBtn');
+            const searchBtn = document.getElementById('searchBtn');
+            const dropdowns = [uploadDropdown, slidersDropdown, modelDropdown];
 
             // Function to resize textarea automatically
             function autoResizeTextArea() {
@@ -408,6 +498,71 @@
             newChatBtn.addEventListener('click', () => {
                 console.log('Yangi chat boshlandi!');
                 // Bu yerga yangi chat ochish logikasini qo'shishingiz mumkin
+            });
+
+            // Dropdownlarni yopish funksiyasi
+            function closeAllDropdowns() {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show-dropdown');
+                });
+                uploadBtn.setAttribute('aria-expanded', 'false');
+                slidersBtn.setAttribute('aria-expanded', 'false');
+                modelSelectBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            // Dropdownni boshqarish funksiyasi
+            function toggleDropdown(button, dropdown) {
+                const isExpanded = dropdown.classList.contains('show-dropdown');
+                closeAllDropdowns(); // Boshqa barcha menyularni yopish
+                if (!isExpanded) {
+                    dropdown.classList.add('show-dropdown');
+                    button.setAttribute('aria-expanded', 'true');
+                }
+            }
+            
+            // Tugmalarga click hodisalarini qo'shish
+            uploadBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleDropdown(uploadBtn, uploadDropdown);
+            });
+            
+            slidersBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleDropdown(slidersBtn, slidersDropdown);
+            });
+
+            modelSelectBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleDropdown(modelSelectBtn, modelDropdown);
+            });
+
+            // Dropdown-ni tashqarini bosganda yopish
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.dropdown-container')) {
+                    closeAllDropdowns();
+                }
+            });
+
+            // Dropdown elementlarini tanlash hodisasi
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    closeAllDropdowns();
+                });
+            });
+
+            // "DeepThink" va "Search" tugmalarining holatini boshqarish
+            deepThinkBtn.addEventListener('click', () => {
+                deepThinkBtn.classList.toggle('active');
+                if (searchBtn.classList.contains('active')) {
+                    searchBtn.classList.remove('active');
+                }
+            });
+
+            searchBtn.addEventListener('click', () => {
+                searchBtn.classList.toggle('active');
+                if (deepThinkBtn.classList.contains('active')) {
+                    deepThinkBtn.classList.remove('active');
+                }
             });
         });
     </script>
