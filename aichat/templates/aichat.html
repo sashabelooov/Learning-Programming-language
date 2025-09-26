@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktiv Menyu</title>
+    <!-- Font Awesome ikonalarini yuklash -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #1e1e1e; /* To'qroq fon */
+            color: white;
+            margin: 0;
+            padding: 20px;
+            /* Kontentni vertikal markazga joylash uchun flexbox */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; /* Sahifa balandligini to'liq olish uchun */
+            gap: 20px; /* Logotip va chat maydoni orasidagi masofa */
+            box-sizing: border-box;
+        }
+
+        .top-bar {
+            /* Position the top bar at the top of the viewport */
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Logo va tugmalar orasidagi masofa */
+        }
+
+        /* "Pilla" shaklidagi tugmalar guruhi */
+        .button-group {
+            display: flex;
+            align-items: center;
+            background-color: #333333;
+            border-radius: 50px; /* To'liq yumaloq qirralar */
+            padding: 4px;
+            border: 1px solid #4a4a4e;
+        }
+
+        /* Ikonkali tugmalar uchun umumiy stil */
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background-color: transparent; /* Orqa fon shaffof */
+            border: none;
+            border-radius: 50%; /* Tugmalarni dumaloq qilish */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Sichqoncha olib borganda yengil fon */
+        }
+
+        .icon-btn svg {
+            stroke: #e0e0e0; /* Ikonka ranggi */
+        }
+
+        /* Yon menyu (Sidebar) uchun stillar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px; /* Boshida ekran tashqarisida */
+            width: 280px;
+            height: 100%;
+            background-color: #1e1e1e;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease-in-out;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #4a4a4e;
+            z-index: 1000;
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #4a4a4e;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+        }
+        
+        /* Chat input section styles */
+        .chat-input-area {
+            background-color: #2b2b2b;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0; 
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 48px;
+            max-height: 200px;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0;
+            outline: none;
+            font-size: 16px;
+            resize: none;
+            box-sizing: border-box;
+            line-height: 1.5;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overflow-y: auto;
+        }
+
+        .text-input::-webkit-scrollbar {
+            display: none;
+        }
+
+        .bottom-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button-group-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative; /* Dropdownlarni joylash uchun */
+        }
+
+        .button-group-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative; /* Dropdown joylashishi uchun */
+        }
+        
+        /* Dropdown uchun umumiy stillar */
+        .dropdown-container {
+            position: relative;
+            display: inline-block; 
+        }
+
+        .dropdown {
+            position: absolute;
+            top: calc(100% + 8px); /* Tugmaning ostida joylash */
+            left: 0;
+            background-color: #333333;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        /* menyu pastga qarab ochilishi uchun stil */
+        .dropdown.show-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            color: #d1d1d1;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background-color: #4a4a4e;
+        }
+
+        .control-btn {
+            width: 38px;
+            height: 38px;
+            background-color: #4a4a4e;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+            border-radius: 12px;
+        }
+
+        .control-btn:hover {
+            background-color: #5a5a5e;
+        }
+
+        .control-btn svg {
+            fill: white;
+            stroke: white;
+            stroke-width: 1.5;
+        }
+
+        /* Font Awesome ikonkalari uchun yangi stil */
+        .control-btn i {
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Yangi mikrofon belgisi uchun stil */
+        .control-btn img {
+            width: 22px;
+            height: 22px;
+            filter: invert(1);
+        }
+
+        .model-select-btn {
+            background: transparent;
+            border: none;
+            color: #d1d1d1;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 12px;
+            transition: background-color 0.2s ease;
+            /* Dropdown bilan birga turishi uchun */
+            position: relative; 
+        }
+
+        .model-select-btn:hover {
+            background-color: #4a4a4e;
+        }
+
+        .model-select-btn svg {
+            stroke: #d1d1d1;
+        }
+
+        /* Send tugmasining yangi rangi */
+        .send-btn {
+            background-color: #3b82f6; /* Moviy rang */
+            border-radius: 50%; /* Make it circular */
+            width: 48px;
+            height: 48px;
+        }
+
+        .send-btn:hover {
+            background-color: #60a5fa; /* Moviy rang ustida sichqoncha */
+        }
+        
+        .extra-buttons-input {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* "DeepThink" va "Search" tugmalari uchun umumiy stillar */
+        .extra-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px; /* Kichiklashtirildi */
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border: 1px solid #4a4a4e; /* Umumiy chegara */
+            background-color: #4a4a4e; /* Umumiy fon rangi */
+            color: #d1d1d1; 
+        }
+        
+        .extra-btn.active {
+            background-color: #3b82f6; /* Bosilganda ko'k rang */
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .extra-btn.active img {
+            filter: none; /* Ko'k rang fonida rangini o'zgartirmaydi */
+        }
+
+        /* Tugmalar ustiga sichqoncha olib borilganda */
+        .extra-btn:hover {
+            background-color: #3b82f6;
+            border-color: #3b82f6; /* chegara rangini ham o'zgartiramiz */
+            color: white;
+        }
+        
+        .extra-btn:hover img {
+            filter: none;
+        }
+
+        /* Ikonkalarga mos stillar */
+        .extra-btn i {
+            font-size: 16px;
+            color: white; /* Ikonka rangi endi oq */
+        }
+
+        .extra-btn img {
+            width: 20px; /* Ikonka o'lchami kichiklashtirildi */
+            height: 20px; /* Ikonka o'lchami kichiklashtirildi */
+            filter: invert(1); /* Oq rangga o'zgartirildi */
+        }
+
+        /* Styles for the logo and heading, now outside the chat-input-area */
+        .logo-and-text {
+            display: flex; /* Flexbox yoqildi */
+            flex-direction: row; /* Elementlar bir qatorda joylashadi */
+            align-items: center; /* Vertikal markazga joylashtirish */
+            gap: 12px;
+            margin: 0 0 20px 0; /* Pastdan ozgina masofa qo'shamiz */
+        }
+
+        .logo-and-text .logo, .top-bar .logo {
+            width: 38px; /* Logotip o'lchami 38px ga o'zgartirildi */
+            height: 38px; /* Logotip o'lchami 38px ga o'zgartirildi */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-and-text .logo svg, .top-bar .logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-and-text .welcome-text {
+            font-size: 32px;
+            font-weight: 500;
+            margin: 0;
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="top-bar">
+        <!-- Logotip endi tugmalar guruhidan tashqarida -->
+        <div class="logo">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="23" stroke="#e35a39" stroke-width="2"/>
+                <path d="M14 24L24 14L34 24L24 34L14 24Z" fill="#e35a39"/>
+            </svg>
+        </div>
+        
+        <div class="button-group">
+            <button class="icon-btn" id="openMenuBtn" aria-label="Menyuni ochish">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.75 18L3 18C2.44772 18 2 17.5523 2 17L2 7C2 6.44772 2.44772 6 3 6L9.75 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L22 6C22.5523 6 23 6.44772 23 7V17C23 17.5523 22.5523 18 22 18L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            
+            <button class="icon-btn" id="newChatBtn" aria-label="Yangi chat boshlash">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17/L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 8V16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 12H16" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menyu</h3>
+            <button class="icon-btn" id="closeMenuBtn" aria-label="Menyuni yopish">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.75 18L3 18C2.44772 18 2 17.5523 2 17L2 7C2 6.44772 2.44772 6 3 6L9.75 6" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L22 6C22.5523 6 23 6.44772 23 7V17C23 17.5523 22.5523 18 22 18/L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9.75 6L9.75 18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <p>Menyu kontenti shu yerda bo'ladi...</p>
+        </div>
+    </div>
+    
+    <div class="logo-and-text">
+        <div class="logo">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="24" cy="24" r="23" stroke="#e35a39" stroke-width="2"/>
+                <path d="M14 24L24 14L34 24L24 34L14 24Z" fill="#e35a39"/>
+            </svg>
+        </div>
+        <h2 class="welcome-text">How can I help you today?</h2>
+    </div>
+
+    <div class="chat-input-area">
+        <textarea class="text-input" placeholder="How can I help you today?"></textarea>
+        <div class="bottom-controls">
+            <div class="button-group-left">
+                <div class="dropdown-container">
+                    <button class="control-btn" id="uploadBtn" aria-label="Fayl yuklash" aria-expanded="false" aria-controls="uploadDropdown">
+                        <i class="fa-solid fa-upload"></i>
+                    </button>
+                    <div class="dropdown" id="uploadDropdown" role="menu">
+                        <div class="dropdown-item" role="menuitem">Kompyuterdan yuklash</div>
+                        <div class="dropdown-item" role="menuitem">URL orqali yuklash</div>
+                    </div>
+                </div>
+                <div class="dropdown-container">
+                    <button class="control-btn" id="slidersBtn" aria-label="Yangi qator qo'shish" aria-expanded="false" aria-controls="slidersDropdown">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                    <div class="dropdown" id="slidersDropdown" role="menu">
+                        <div class="dropdown-item" role="menuitem">Kengaytirilgan sozlamalar</div>
+                        <div class="dropdown-item" role="menuitem">Formatlash</div>
+                    </div>
+                </div>
+                <div class="extra-buttons-input">
+                    <button class="extra-btn" id="deepThinkBtn" aria-label="DeepThink rejimi">
+                         <img width="48" height="48" src="https://img.icons8.com/parakeet-line/48/telescope.png" alt="telescope"/>
+                        DeepThink
+                    </button>
+                    <button class="extra-btn" id="searchBtn" aria-label="Qidiruv funksiyasi">
+                        <img width="50" height="50" src="https://img.icons8.com/ios/50/globe--v1.png" alt="globe--v1"/>
+                        Search
+                    </button>
+                </div>
+            </div>
+            <div class="button-group-right">
+                 <!-- Modelni tanlash tugmasidan oldin mikrofon ikonkasini qo'shish -->
+                 <button class="control-btn" aria-label="Ovozli kiritish">
+                    <img width="22" height="22" src="https://img.icons8.com/ios/50/microphone.png" alt="microphone"/>
+                </button>
+                <div class="dropdown-container">
+                    <button class="model-select-btn" id="modelSelectBtn" aria-expanded="false" aria-controls="modelDropdown">
+                        Sonnet 4
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9L12 15L18 9" stroke="#d1d1d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown" id="modelDropdown" role="menu">
+                        <div class="dropdown-item" role="menuitem">Opus 5</div>
+                        <div class="dropdown-item" role="menuitem">Sonnet 4</div>
+                        <div class="dropdown-item" role="menuitem">Haiku</div>
+                    </div>
+                </div>
+                <button class="control-btn send-btn" aria-label="Xabar yuborish">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openMenuBtn = document.getElementById('openMenuBtn');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const newChatBtn = document.getElementById('newChatBtn');
+            const sidebar = document.getElementById('sidebar');
+            const textArea = document.querySelector('.text-input');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const slidersBtn = document.getElementById('slidersBtn');
+            const modelSelectBtn = document.getElementById('modelSelectBtn');
+            const uploadDropdown = document.getElementById('uploadDropdown');
+            const slidersDropdown = document.getElementById('slidersDropdown');
+            const modelDropdown = document.getElementById('modelDropdown');
+            const deepThinkBtn = document.getElementById('deepThinkBtn');
+            const searchBtn = document.getElementById('searchBtn');
+            const dropdowns = [uploadDropdown, slidersDropdown, modelDropdown];
+
+            // Function to resize textarea automatically
+            function autoResizeTextArea() {
+                textArea.style.height = 'auto';
+                textArea.style.height = textArea.scrollHeight + 'px';
+            }
+            
+            // Listen for input events on the textarea
+            textArea.addEventListener('input', autoResizeTextArea);
+
+            // Menyu ochish tugmasi bosilganda
+            openMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+
+            // Menyudagi yopish tugmasi bosilganda
+            closeMenuBtn.addEventListener('click', () => {
+                sidebar.classList.remove('show');
+            });
+            
+            // Yangi chat tugmasi bosilganda (hozircha shunchaki konsolga xabar chiqaradi)
+            newChatBtn.addEventListener('click', () => {
+                console.log('Yangi chat boshlandi!');
+                // Bu yerga yangi chat ochish logikasini qo'shishingiz mumkin
+            });
+
+            // Dropdownlarni yopish funksiyasi
+            function closeAllDropdowns() {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show-dropdown');
+                });
+                uploadBtn.setAttribute('aria-expanded', 'false');
+                slidersBtn.setAttribute('aria-expanded', 'false');
+                modelSelectBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            // Dropdownni boshqarish funksiyasi
+            function toggleDropdown(button, dropdown) {
+                const isExpanded = dropdown.classList.contains('show-dropdown');
+                closeAllDropdowns(); // Boshqa barcha menyularni yopish
+                if (!isExpanded) {
+                    dropdown.classList.add('show-dropdown');
+                    button.setAttribute('aria-expanded', 'true');
+                }
+            }
+            
+            // Tugmalarga click hodisalarini qo'shish
+            uploadBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleDropdown(uploadBtn, uploadDropdown);
+            });
+            
+            slidersBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleDropdown(slidersBtn, slidersDropdown);
+            });
+
+            modelSelectBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                toggleDropdown(modelSelectBtn, modelDropdown);
+            });
+
+            // Dropdown-ni tashqarini bosganda yopish
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.dropdown-container')) {
+                    closeAllDropdowns();
+                }
+            });
+
+            // Dropdown elementlarini tanlash hodisasi
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    closeAllDropdowns();
+                });
+            });
+
+            // "DeepThink" va "Search" tugmalarining holatini boshqarish
+            deepThinkBtn.addEventListener('click', () => {
+                deepThinkBtn.classList.toggle('active');
+                if (searchBtn.classList.contains('active')) {
+                    searchBtn.classList.remove('active');
+                }
+            });
+
+            searchBtn.addEventListener('click', () => {
+                searchBtn.classList.toggle('active');
+                if (deepThinkBtn.classList.contains('active')) {
+                    deepThinkBtn.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
