@@ -15,15 +15,29 @@
         margin-bottom: 2.5rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         border: 1px solid #eaeaea;
+        scroll-margin-top: 80px; /* For smooth scrolling */
     }
 
     .content-section-title {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #1e293b;
+        color: #6b7280; /* Gray color */
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
         border-bottom: 2px solid #f1f5f9;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .content-section-title:hover {
+        color: #3b82f6; /* Blue hover effect */
+    }
+
+    .content-section-title i {
+        color: inherit;
+        font-size: 1.3rem;
     }
 
     .text-content {
@@ -207,22 +221,63 @@
         display: block;
     }
 
+    /* Updated Right Sidebar Styles */
+    .right-sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .right-sidebar-header h3 {
+        margin: 0;
+        color: #1e293b;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .right-sidebar-header i {
+        color: #3b82f6;
+        font-size: 1.2rem;
+    }
+
+    .content-nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
     .content-nav li {
-        margin-bottom: 0.75rem;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 0.5rem;
     }
 
     .content-nav a {
-        color: #64748b;
+        color: #6b7280;
         text-decoration: none;
         font-size: 0.9rem;
-        transition: color 0.3s ease;
-        display: block;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        border-left: 3px solid transparent;
     }
 
     .content-nav a:hover {
         color: #3b82f6;
+        background: #f8fafc;
+        border-left-color: #3b82f6;
+        transform: translateX(2px);
+    }
+
+    .content-nav a i {
+        color: inherit;
+        font-size: 0.85rem;
+        width: 16px;
+        text-align: center;
     }
 
     /* Rating Styles */
@@ -439,19 +494,6 @@
         filter: brightness(1);
     }
 
-    /* Remove the old dropdown icon styles from topic-link */
-    .topic-link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.75rem 1rem;
-        color: #64748b;
-        text-decoration: none;
-        border-radius: 6px;
-        transition: all 0.3s ease;
-        width: 100%;
-    }
-
     /* Updated comment button styles */
     .comment-submit-btn {
         background: #3b82f6;
@@ -470,6 +512,11 @@
     .comment-submit-btn:hover {
         background: #2563eb;
         transform: translateY(-1px);
+    }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
     }
 </style>
 
@@ -542,7 +589,9 @@
             <div class="content-item">
                 <!-- Text Content -->
                 {% if content.text %}
-                <h3 class="content-section-title"><i class="fas fa-file-text"></i> Text Content</h3>
+                <h3 class="content-section-title" id="text-content-{{ forloop.counter }}">
+                    <i class="fas fa-file-text"></i> Text Content
+                </h3>
                 <div class="text-content">
                     {{ content.text|linebreaks }}
                 </div>
@@ -553,7 +602,9 @@
                 
                 <!-- Code Content -->
                 {% if content.code %}
-                <h3 class="content-section-title"><i class="fas fa-code"></i> Code Example</h3>
+                <h3 class="content-section-title" id="code-content-{{ forloop.counter }}">
+                    <i class="fas fa-code"></i> Code Example
+                </h3>
                 <div class="code-card">
                     <div class="code-header">
                         <div class="code-title">
@@ -580,7 +631,9 @@
                 
                 <!-- Link Content -->
                 {% if content.link %}
-                <h3 class="content-section-title"><i class="fas fa-external-link-alt"></i> Additional Resource</h3>
+                <h3 class="content-section-title" id="link-content-{{ forloop.counter }}">
+                    <i class="fas fa-external-link-alt"></i> Additional Resource
+                </h3>
                 <div class="link-content">
                     <a href="{{ content.link }}" target="_blank" class="resource-link">
                         <i class="fas fa-external-link-alt"></i>
@@ -597,7 +650,9 @@
                 
                 <!-- Video Content -->
                 {% if content.embed_url %}
-                <h3 class="content-section-title"><i class="fas fa-video"></i> Video Tutorial</h3>
+                <h3 class="content-section-title" id="video-content-{{ forloop.counter }}">
+                    <i class="fas fa-video"></i> Video Tutorial
+                </h3>
                 <div class="video-content">
                     <div class="video-wrapper">
                         <iframe 
@@ -684,26 +739,44 @@
     <aside class="right-sidebar">
         <div class="right-sidebar-content">
             {% if current_topic %}
-            <h3>On this page</h3>
+            <div class="right-sidebar-header">
+                <i class="fas fa-list-ul"></i>
+                <h3>On this page</h3>
+            </div>
             <ul class="content-nav">
                 {% for content in contents %}
-                <li>
-                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 0.3rem;">
-                        {% if content.text %}<i class="fas fa-file-text"></i> Text Content{% endif %}
-                        {% if content.code %}<i class="fas fa-code"></i> Code Example{% endif %}
-                        {% if content.link %}<i class="fas fa-external-link-alt"></i> Resource Link{% endif %}
-                        {% if content.video_url %}<i class="fas fa-video"></i> Video Tutorial{% endif %}
-                    </div>
                     {% if content.text %}
-                        <a href="#">{{ content.text|truncatewords:6 }}</a>
-                    {% elif content.code %}
-                        <a href="#">Code snippet</a>
-                    {% elif content.link %}
-                        <a href="#">External resource</a>
-                    {% elif content.video_url %}
-                        <a href="#">Video tutorial</a>
+                    <li>
+                        <a href="#text-content-{{ forloop.counter }}">
+                            <i class="fas fa-file-text"></i>
+                            Text Content
+                        </a>
+                    </li>
                     {% endif %}
-                </li>
+                    {% if content.code %}
+                    <li>
+                        <a href="#code-content-{{ forloop.counter }}">
+                            <i class="fas fa-code"></i>
+                            Code Example
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if content.link %}
+                    <li>
+                        <a href="#link-content-{{ forloop.counter }}">
+                            <i class="fas fa-external-link-alt"></i>
+                            Additional Resource
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if content.embed_url %}
+                    <li>
+                        <a href="#video-content-{{ forloop.counter }}">
+                            <i class="fas fa-video"></i>
+                            Video Tutorial
+                        </a>
+                    </li>
+                    {% endif %}
                 {% endfor %}
             </ul>
             {% endif %}
@@ -809,4 +882,3 @@
     });
 </script>
 {% endblock %}
-
