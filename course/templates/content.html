@@ -186,13 +186,14 @@
 
     .dropdown-icon {
         transition: transform 0.3s ease;
-        font-size: 0.8rem;
-        color: #94a3b8;
+        width: 16px;
+        height: 16px;
+        filter: brightness(0.7);
     }
 
     .topic-link.active .dropdown-icon {
         transform: rotate(180deg);
-        color: #3b82f6;
+        filter: brightness(1);
     }
 
     .subtopics {
@@ -412,40 +413,43 @@
         line-height: 1.6;
     }
 
-    /* Topic Icons */
-    .topic-icon {
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.5rem;
-        font-size: 0.9rem;
-        color: #64748b;
-    }
-
-    .topic-link.active .topic-icon {
-        color: #3b82f6;
-    }
-
-    /* Content Type Separation */
-    .content-type-separator {
-        margin: 2rem 0;
-        border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
-    }
-
     /* Updated styles for topic links */
     .topic-link-content {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 0.5rem;
         flex: 1;
     }
 
     .topic-title {
         flex: 1;
+    }
+
+    .dropdown-icon {
+        transition: transform 0.3s ease;
+        width: 16px;
+        height: 16px;
+        filter: brightness(0.7);
+        flex-shrink: 0;
+    }
+
+    .topic-link.active .dropdown-icon {
+        transform: rotate(180deg);
+        filter: brightness(1);
+    }
+
+    /* Remove the old dropdown icon styles from topic-link */
+    .topic-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        color: #64748b;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        width: 100%;
     }
 
     /* Updated comment button styles */
@@ -482,14 +486,13 @@
                 {% for topic in topics %}
                     <li>
                         <a href="{% url 'topic_content' language.slug topic.slug %}" 
-                           class="topic-link {% if current_topic and topic.id == current_topic.id %}active{% endif %}">
+                        class="topic-link {% if current_topic and topic.id == current_topic.id %}active{% endif %}">
                             <div class="topic-link-content">
-                                <i class="fas fa-folder topic-icon"></i>
                                 <span class="topic-title">{{ topic.title }}</span>
+                                {% if topic.subtopics.exists %}
+                                    <img src="https://img.icons8.com/fluency-systems-regular/48/down-squared.png" alt="down-squared" class="dropdown-icon"/>
+                                {% endif %}
                             </div>
-                            {% if topic.subtopics.exists %}
-                                <i class="fas fa-chevron-down dropdown-icon"></i>
-                            {% endif %}
                         </a>
                         
                         {% if topic.subtopics.exists %}
@@ -497,9 +500,8 @@
                             {% for subtopic in topic.subtopics.all %}
                             <li>
                                 <a href="{% url 'topic_content' language.slug subtopic.slug %}" 
-                                   class="topic-link {% if current_topic and subtopic.id == current_topic.id %}active{% endif %}">
+                                class="topic-link {% if current_topic and subtopic.id == current_topic.id %}active{% endif %}">
                                     <div class="topic-link-content">
-                                        <i class="fas fa-file topic-icon"></i>
                                         <span class="topic-title">{{ subtopic.title }}</span>
                                     </div>
                                 </a>
@@ -807,3 +809,4 @@
     });
 </script>
 {% endblock %}
+

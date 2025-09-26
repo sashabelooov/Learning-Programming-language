@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     # local apps
     'home',
     'course',
-    'aichat'
+    'aichat',
 
     # global apps
     'rest_framework',

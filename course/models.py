@@ -43,6 +43,7 @@ class Content(models.Model):
     text = models.TextField()
     link = models.URLField(blank=True, null=True)
     code = models.TextField(blank=True, null=True)
+    code_result = models.TextField(blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField(editable=False)
 
