@@ -15,13 +15,13 @@
         margin-bottom: 2.5rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         border: 1px solid #eaeaea;
-        scroll-margin-top: 80px; /* For smooth scrolling */
+        scroll-margin-top: 80px;
     }
 
     .content-section-title {
         font-size: 1.5rem;
         font-weight: 600;
-        color: #6b7280; /* Gray color */
+        color: #6b7280;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
         border-bottom: 2px solid #f1f5f9;
@@ -32,7 +32,7 @@
     }
 
     .content-section-title:hover {
-        color: #3b82f6; /* Blue hover effect */
+        color: #3b82f6;
     }
 
     .content-section-title i {
@@ -48,12 +48,12 @@
     }
 
     .code-card {
-        background: #0f172a;
+        background: #0d1f38;
         border-radius: 12px;
         padding: 1.5rem;
         margin: 1.5rem 0;
         position: relative;
-        border: 1px solid #334155;
+        border: 1px solid #2a2a2b;
     }
 
     .code-header {
@@ -62,7 +62,7 @@
         align-items: center;
         margin-bottom: 1rem;
         padding-bottom: 0.5rem;
-        border-bottom: 1px solid #334155;
+        border-bottom: 1px solid #2a2a2b;
     }
 
     .code-title {
@@ -98,6 +98,14 @@
         transform: translateY(-1px);
     }
 
+    .run-btn.running {
+        background: #059669;
+    }
+
+    .run-btn.running:hover {
+        background: #059669;
+    }
+
     .copy-btn {
         background: #3b82f6;
         color: white;
@@ -120,11 +128,111 @@
 
     .code-content pre {
         margin: 0;
-        color: #e2e8f0;
+        color: #51cf66;
         font-family: 'Fira Code', 'Consolas', monospace;
         font-size: 0.95rem;
         line-height: 1.5;
         overflow-x: auto;
+    }
+
+
+    /* Terminal Styles */
+    .terminal-card {
+        background: #0d1f38;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+        border: 1px solid #2a2a2b;
+        overflow: hidden;
+        display: none;
+    }
+
+    .terminal-card.active {
+        display: block;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .terminal-header {
+        background: #0d1f38;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #2a2a2b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .terminal-title {
+        color: #a9b1d6;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .terminal-controls {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .terminal-control {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .terminal-close {
+        background: #ff5f57;
+    }
+
+    .terminal-minimize {
+        background: #ffbd2e;
+    }
+
+    .terminal-maximize {
+        background: #28ca42;
+    }
+
+    .terminal-content {
+        padding: 1.5rem;
+        font-family: 'Fira Code', 'Consolas', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        min-height: 100px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .terminal-output {
+        color: #51cf66; 
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-weight: 600; /* Make output text bolder */
+    }
+
+    .terminal-success {
+        color: #51cf66;
+        font-weight: 700; /* Even bolder for success messages */
+    }
+
+    .terminal-error {
+        color: #f7768e;
+        font-weight: 700; /* Even bolder for error messages */
+    }
+
+    .terminal-line {
+        margin-bottom: 0.5rem;
     }
 
     .resource-link {
@@ -176,26 +284,29 @@
     }
 
     .topic-link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.75rem 1rem;
-        color: #64748b;
-        text-decoration: none;
-        border-radius: 6px;
-        transition: all 0.3s ease;
-        width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    width: 100%;
+    position: relative;
+    z-index: 1;
     }
 
     .topic-link:hover {
-        background: #f1f5f9;
-        color: #3b82f6;
-    }
+    background: #f1f5f9;
+    color: #3b82f6;
+}
 
     .topic-link.active {
         background: #f0f7ff;
         color: #3b82f6;
         font-weight: 600;
+        border-left: 3px solid #3b82f6;
     }
 
     .dropdown-icon {
@@ -217,8 +328,39 @@
         display: none;
     }
 
+    .subtopics .topic-link {
+        padding-left: 1.5rem;
+        border-left: 2px solid #e2e8f0;
+    }
+
     .topic-link.active + .subtopics {
         display: block;
+    }
+
+    .subtopics .topic-link:hover {
+        background: #f8fafc;
+        border-left-color: #3b82f6;
+    }
+
+    .subtopics .topic-link.active {
+        background: #f0f7ff;
+        border-left-color: #3b82f6;
+    }
+
+    /* Faqat bitta topic active bo'lishi uchun */
+    .nav-links li .topic-link.active {
+        background: #f0f7ff;
+        color: #3b82f6;
+    }
+
+    .nav-links li .topic-link.active + .subtopics .topic-link {
+        background: transparent;
+        color: #64748b;
+    }
+
+    .nav-links li .topic-link.active + .subtopics .topic-link.active {
+        background: #f0f7ff;
+        color: #3b82f6;
     }
 
     /* Updated Right Sidebar Styles */
@@ -234,7 +376,7 @@
     .right-sidebar-header h3 {
         margin: 0;
         padding: 0;
-        display: inline-block; /* yozuvni ikon bilan yonma-yon qiladi */
+        display: inline-block;
         color: #1e293b;
         font-size: 1.1rem;
         font-weight: 600;
@@ -618,7 +760,7 @@
                 <!-- Text Content -->
                 {% if content.text %}
                 <h3 class="content-section-title" id="text-content-{{ forloop.counter }}">
-                    <i class="fas fa-file-text"></i> Text Content
+                    <i class="fas fa-file-text"></i> Main Content
                 </h3>
                 <div class="text-content">
                     {{ content.text|linebreaks }}
@@ -640,7 +782,7 @@
                             {{ language.name }} Code
                         </div>
                         <div class="code-actions">
-                            <button class="run-btn" onclick="runCode('code-{{ forloop.counter }}')" title="Run Code">
+                            <button class="run-btn" onclick="runCode('{{ forloop.counter }}', `{{ content.code_result|escapejs }}`)" title="Run Code">
                                 <i class="fas fa-play"></i>
                             </button>
                             <button class="copy-btn" onclick="copyCode('code-{{ forloop.counter }}')">
@@ -650,6 +792,24 @@
                     </div>
                     <div class="code-content">
                         <pre><code id="code-{{ forloop.counter }}" class="language-{{ language.name|lower }}">{{ content.code }}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Terminal for Code Results -->
+                <div class="terminal-card" id="terminal-{{ forloop.counter }}">
+                    <div class="terminal-header">
+                        <div class="terminal-title">
+                            <i class="fas fa-terminal"></i>
+                            Terminal Output
+                        </div>
+                        <div class="terminal-controls">
+                            <div class="terminal-control terminal-close" onclick="closeTerminal('{{ forloop.counter }}')"></div>
+                            <div class="terminal-control terminal-minimize" onclick="minimizeTerminal('{{ forloop.counter }}')"></div>
+                            <div class="terminal-control terminal-maximize" onclick="maximizeTerminal('{{ forloop.counter }}')"></div>
+                        </div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-output" id="terminal-output-{{ forloop.counter }}"></div>
                     </div>
                 </div>
                 {% if content.link or content.embed_url %}
@@ -822,12 +982,11 @@
 
 <script>
     // Dropdown menu functionality
-    document.querySelectorAll('.topic-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.querySelector('.dropdown-icon')) {
-                e.preventDefault();
-                this.classList.toggle('active');
-            }
+    document.querySelectorAll('.topic-link .dropdown-icon').forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.preventDefault();
+            const link = this.closest('.topic-link');
+            link.classList.toggle('active');
         });
     });
 
@@ -853,19 +1012,107 @@
         }, 2000);
     }
 
-    // Run code functionality (placeholder)
-    function runCode(elementId) {
+    // Run code functionality with terminal
+    function runCode(counter, codeResult) {
         const btn = event.target.closest('.run-btn');
-        const originalText = btn.innerHTML;
+        const terminal = document.getElementById(`terminal-${counter}`);
+        const terminalOutput = document.getElementById(`terminal-output-${counter}`);
+        
+        // Reset terminal
+        terminalOutput.innerHTML = '';
+        terminal.classList.add('active');
+        
+        // Show loading state
+        btn.classList.add('running');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         btn.disabled = true;
         
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            alert('Code execution feature will be implemented soon!');
-        }, 1000);
+        // Scroll to terminal
+        terminal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Simulate code execution with typing effect
+        simulateCodeExecution(terminalOutput, codeResult, btn);
     }
+
+    // Yangilangan runCode funksiyasi
+    function runCode(counter, codeResult) {
+        const btn = event.target.closest('.run-btn');
+        const terminal = document.getElementById(`terminal-${counter}`);
+        const terminalOutput = document.getElementById(`terminal-output-${counter}`);
+        
+        // Reset terminal
+        terminalOutput.innerHTML = '';
+        terminal.classList.add('active');
+        
+        // Show loading state
+        btn.classList.add('running');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+        
+        // Scroll to terminal
+        terminal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Modeldan kelgan code_result ni ishlatish
+        simulateCodeExecution(terminalOutput, codeResult, btn);
+    }
+
+    function simulateCodeExecution(outputElement, result, runButton) {
+        // Clear previous content
+        outputElement.innerHTML = '';
+        
+        // Simulate typing effect
+        setTimeout(() => {
+            if (result && result.trim()) {
+                // Agar modelda code_result mavjud bo'lsa
+                const resultLine = document.createElement('div');
+                resultLine.className = 'terminal-line';
+                resultLine.innerHTML = `<span class="terminal-success">${result}</span>`;
+                outputElement.appendChild(resultLine);
+            } else {
+                // Agar code_result bo'sh bo'lsa
+                const successLine = document.createElement('div');
+                successLine.className = 'terminal-line';
+                successLine.innerHTML = `<span class="terminal-success">Code executed successfully!</span>`;
+                outputElement.appendChild(successLine);
+            }
+            
+            // Reset button state
+            runButton.classList.remove('running');
+            runButton.innerHTML = '<i class="fas fa-play"></i>';
+            runButton.disabled = false;
+            
+            }, 1000);
+        }
+
+    // Terminal control functions
+    function closeTerminal(counter) {
+        const terminal = document.getElementById(`terminal-${counter}`);
+        terminal.classList.remove('active');
+    }
+
+    function minimizeTerminal(counter) {
+        const terminalContent = document.querySelector(`#terminal-${counter} .terminal-content`);
+        terminalContent.style.display = terminalContent.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function maximizeTerminal(counter) {
+        const terminal = document.getElementById(`terminal-${counter}`);
+        terminal.style.maxHeight = terminal.style.maxHeight === '1000px' ? '400px' : '1000px';
+    }
+
+    
+
+    // Apply syntax highlighting when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        applySyntaxHighlighting();
+        
+        const commentTextarea = document.getElementById('id_text');
+        if (!commentTextarea) return;
+        const hash = window.location.hash;
+        if (hash === '#comments-section' || hash === '#id_text') {
+            commentTextarea.focus();
+        }
+    });
 
     // Star rating functionality
     const stars = document.querySelectorAll('.star');
@@ -908,15 +1155,5 @@
             }
         });
     }
-
-    // Auto-focus comment textarea
-    document.addEventListener('DOMContentLoaded', function() {
-        const commentTextarea = document.getElementById('id_text');
-        if (!commentTextarea) return;
-        const hash = window.location.hash;
-        if (hash === '#comments-section' || hash === '#id_text') {
-            commentTextarea.focus();
-        }
-    });
 </script>
 {% endblock %}

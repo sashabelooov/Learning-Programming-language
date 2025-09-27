@@ -62,6 +62,9 @@ def content_view(request, language_slug, topic_slug):
         else:
             c.embed_url = None
 
+        if c.code_result:
+            c.code_result = c.code_result.replace('`', '\\`').replace('${', '\\${')
+
     return render(request, "content.html", {
         "language": language,
         "topics": topics,
